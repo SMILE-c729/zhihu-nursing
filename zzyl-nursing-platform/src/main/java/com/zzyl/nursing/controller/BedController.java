@@ -34,6 +34,7 @@ public class BedController extends BaseController
     /**
      * 查询床位列表
      */
+    
     @PreAuthorize("@ss.hasPermi('elder:bed:list')")
     @GetMapping("/list")
     @ApiOperation("查询床位列表")

@@ -3,6 +3,7 @@ package com.zzyl.nursing.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zzyl.common.core.domain.R;
 import com.zzyl.nursing.vo.NursingLevelVo;
 import io.swagger.annotations.Api;
@@ -113,5 +114,17 @@ public class NursingLevelController extends BaseController
     public AjaxResult remove(@PathVariable @ApiParam("要删除的护理等级ID") Long[] ids)
     {
         return toAjax(nursingLevelService.deleteNursingLevelByIds(ids));
+    }
+
+    /*
+    * 查询所有护理等级信息
+    * */
+    @ApiOperation("查询所有护理等级信息")
+    @GetMapping("/all")
+    public R<List<NursingLevel>> getAllNursingLevels()
+    {
+        //使用mp来查询所有护理等级信息
+        List<NursingLevel> list = nursingLevelService.lambdaQuery().eq(NursingLevel::getStatus, 1).list();
+        return R.ok(list);
     }
 }

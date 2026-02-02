@@ -170,6 +170,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from room where id = #{id}
     </delete>
 
+    <select id="getRoomById" parameterType="Long" resultType="com.zzyl.nursing.vo.RoomVo">
+        select r.id roomId,
+               r.code ,
+               r.floor_id floorId,
+               f.name  floorName,
+               rt.price
+        from room r
+        left join floor f on r.floor_id = f.id
+        left join room_type rt on rt.name = r.type_name
+        where r.id = #{id}
+    </select>
+
     <delete id="deleteRoomByIds" parameterType="String">
         delete from room where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">

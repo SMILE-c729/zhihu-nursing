@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.zzyl.common.annotation.Excel;
@@ -16,6 +17,7 @@ import com.zzyl.common.core.domain.BaseEntity;
  * @author alexis
  * @date 2026-02-01
  */
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

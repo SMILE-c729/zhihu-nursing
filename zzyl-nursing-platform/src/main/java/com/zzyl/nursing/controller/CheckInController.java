@@ -21,6 +21,7 @@ import com.zzyl.common.annotation.Log;
 import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
 import com.zzyl.common.enums.BusinessType;
+import com.zzyl.nursing.dto.CheckInApplyDto;
 import com.zzyl.nursing.domain.CheckIn;
 import com.zzyl.nursing.service.ICheckInService;
 import com.zzyl.common.utils.poi.ExcelUtil;
@@ -88,6 +89,17 @@ public class CheckInController extends BaseController
     public AjaxResult add(@RequestBody @ApiParam("新增的入住对象") CheckIn checkIn)
     {
         return toAjax(checkInService.insertCheckIn(checkIn));
+    }
+
+    /**
+     * 申请入住
+     */
+    @ApiOperation("申请入住")
+    @PostMapping("/apply")
+    public AjaxResult apply(@RequestBody @ApiParam("入住申请参数") CheckInApplyDto applyDto)
+    {
+        checkInService.applyCheckIn(applyDto);
+        return success();
     }
 
     /**

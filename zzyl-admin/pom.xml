@@ -18,11 +18,13 @@
     <dependencies>
 
         <!-- spring-boot-devtools -->
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional> <!-- 表示依赖不会传递 -->
+            <optional>true</optional>
         </dependency>
+        -->
 
         <!--&lt;!&ndash; swagger3&ndash;&gt;
         <dependency>
@@ -82,7 +84,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.5.15</version>
                 <configuration>
-                    <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                    <fork>false</fork> <!-- Set to false to avoid forked JVM causing devtools restart -->
                 </configuration>
                 <executions>
                     <execution>

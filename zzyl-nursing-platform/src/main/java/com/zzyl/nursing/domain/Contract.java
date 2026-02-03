@@ -31,7 +31,7 @@ public class Contract extends BaseEntity
     /** 老人ID */
     @Excel(name = "老人ID")
     @ApiModelProperty("老人ID")
-    private Integer elderId;
+    private Long elderId;
 
     /** 合同名称 */
     @Excel(name = "合同名称")

@@ -1,23 +1,27 @@
 package com.zzyl.nursing.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.db.Db;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.zzyl.common.exception.base.BaseException;
 import com.zzyl.common.utils.CodeGenerator;
-import com.zzyl.common.utils.DateUtils;
 import com.zzyl.nursing.domain.*;
 import com.zzyl.nursing.dto.CheckInApplyDto;
-import com.zzyl.nursing.dto.CheckInContractDto;
 import com.zzyl.nursing.dto.CheckInElderDto;
 import com.zzyl.nursing.mapper.*;
+import com.zzyl.nursing.vo.CheckInConfigVo;
+import com.zzyl.nursing.vo.CheckInDetailVo;
+import com.zzyl.nursing.vo.CheckInElderVo;
+import com.zzyl.nursing.vo.ElderFamilyVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +57,72 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn> impl
     @Override
     public CheckIn selectCheckInById(Long id) {
         return getById(id);
+    }
+
+    /**
+     * 根据入住主键查询入住详情
+     *
+     * @param id 入住主键
+     * @return 返回入住详情
+     */
+    @Override
+    public CheckInDetailVo selectDetailById(Long id) {
+        CheckIn checkIn = checkInMapper.selectById(id);
+        if (checkIn == null) {
+            throw new BaseException("入住记录不存在");
+        }
+
+        CheckInDetailVo detailVo = new CheckInDetailVo();
+
+        // 老人信息
+        CheckInElderVo elderVo = new CheckInElderVo();
+        Elder elder = elderMapper.selectById(checkIn.getElderId());
+        if (elder != null) {
+            BeanUtils.copyProperties(elder, elderVo);
+            elderVo.setAge(calculateAge(elder.getBirthday()));
+        } else {
+            elderVo.setId(checkIn.getElderId());
+            elderVo.setName(checkIn.getElderName());
+            elderVo.setIdCardNo(checkIn.getIdCardNo());
+        }
+        detailVo.setCheckInElderVo(elderVo);
+
+        // 家属信息
+        List<ElderFamilyVo> familyVoList = Collections.emptyList();
+        if (StringUtils.isNotBlank(checkIn.getRemark())) {
+            try {
+                familyVoList = JSON.parseArray(checkIn.getRemark(), ElderFamilyVo.class);
+            } catch (Exception ignore) {
+                // 忽略异常，保障接口正常返回
+            }
+        }
+        detailVo.setElderFamilyVoList(familyVoList);
+
+        // 入住配置信息
+        CheckInConfigVo checkInConfigVo = new CheckInConfigVo();
+        LambdaQueryWrapper<CheckInConfig> configWrapper = new LambdaQueryWrapper<>();
+        configWrapper.eq(CheckInConfig::getCheckInId, checkIn.getId())
+                .orderByDesc(CheckInConfig::getCreateTime)
+                .last("limit 1");
+        CheckInConfig checkInConfig = checkInConfigMapper.selectOne(configWrapper);
+        if (checkInConfig != null) {
+            BeanUtils.copyProperties(checkInConfig, checkInConfigVo);
+        }
+        checkInConfigVo.setStartDate(checkIn.getStartDate());
+        checkInConfigVo.setEndDate(checkIn.getEndDate());
+        String bedNumber = elder != null ? elder.getBedNumber() : checkIn.getBedNumber();
+        checkInConfigVo.setBedNumber(bedNumber);
+        detailVo.setCheckInConfigVo(checkInConfigVo);
+
+        //  合同信息
+        LambdaQueryWrapper<Contract> contractWrapper = new LambdaQueryWrapper<>();
+        contractWrapper.eq(Contract::getElderId, checkIn.getElderId())
+                .orderByDesc(Contract::getCreateTime)
+                .last("limit 1");
+        Contract contract = contractMapper.selectOne(contractWrapper);
+        detailVo.setContract(contract);
+
+        return detailVo;
     }
 
     /**
@@ -150,6 +220,25 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn> impl
     }
 
     /**
+     * 根据出生日期计算年龄
+     *
+     * @param birthday 出生日期，格式为yyyy-MM-dd
+     * @return 年龄
+     */
+    private Integer calculateAge(String birthday) {
+        if (StringUtils.isBlank(birthday)) {
+            return null;
+        }
+        try {
+            //1990-01-01 12:30:45" → "1990-01-01"
+            String birthStr = birthday.length() > 10 ? birthday.substring(0, 10) : birthday;
+            LocalDate birthDate = LocalDate.parse(birthStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    /**
      * 新增入住配置
      * @param checkInApplyDto
      */
@@ -233,4 +322,6 @@ public class CheckInServiceImpl extends ServiceImpl<CheckInMapper, CheckIn> impl
         }
         return elder;
     }
+
+
 }

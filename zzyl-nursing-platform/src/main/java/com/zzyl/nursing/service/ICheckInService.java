@@ -1,9 +1,10 @@
 package com.zzyl.nursing.service;
 
-import java.util.List;
 import com.zzyl.nursing.domain.CheckIn;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zzyl.nursing.dto.CheckInApplyDto;
+import com.zzyl.nursing.vo.CheckInDetailVo;
+import java.util.List;
 
 /**
  * 入住Service接口
@@ -68,4 +69,12 @@ public interface ICheckInService extends IService<CheckIn>
      * @return result
      */
     void applyCheckIn(CheckInApplyDto applyDto);
+
+    /**
+     * 查询入住详情
+     *
+     * @param id 入住ID
+     * @return 详情数据
+     */
+    CheckInDetailVo selectDetailById(Long id);
 }

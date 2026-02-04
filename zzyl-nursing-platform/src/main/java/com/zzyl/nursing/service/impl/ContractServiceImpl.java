@@ -107,7 +107,7 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract> i
                 .le(Contract::getStartDate, LocalDateTime.now())
                 .eq(Contract::getStatus, 0)
                 .set(Contract::getStatus, 1)
-                // 定时任务无登录用户，手工补齐审计字段
+                // 定时任务无登录用户，手工补齐审计字段（没有传实体，MyBatis‑Plus 的自动填充（MetaObjectHandler.updateFill）不会触发）
                 .set(Contract::getUpdateTime, new Date())
                 .set(Contract::getUpdateBy, "system")
                 .update();

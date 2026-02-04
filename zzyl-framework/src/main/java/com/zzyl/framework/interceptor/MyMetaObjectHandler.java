@@ -23,10 +23,10 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.setFieldValByName("updateTime", new Date(), metaObject);
-        this.setFieldValByName("updateBy", String.valueOf(getLoginUserId()), metaObject);
-//        this.strictInsertFill(metaObject, "updateBy", String.class, String.valueOf(getLoginUserId()));
-//        this.strictUpdateFill(metaObject, "updateTime", Date.class, DateUtils.getNowDate());
+      /*  this.setFieldValByName("updateTime", new Date(), metaObject);
+        this.setFieldValByName("updateBy", String.valueOf(getLoginUserId()), metaObject);*/
+        this.strictUpdateFill(metaObject, "updateBy", String.class, String.valueOf(getLoginUserId()));
+        this.strictUpdateFill(metaObject, "updateTime", Date.class, DateUtils.getNowDate());
     }
 
     public Long getLoginUserId() {

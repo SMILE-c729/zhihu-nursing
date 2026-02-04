@@ -1,6 +1,8 @@
 package com.zzyl.nursing.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import com.zzyl.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +94,22 @@ public class ContractServiceImpl extends ServiceImpl<ContractMapper, Contract> i
     public int deleteContractById(Long id)
     {
         return removeById(id) ? 1 : 0;
+    }
+
+    /**
+     * 定时修改合同状态
+     *
+     */
+    @Override
+    public void updateContractStatus() {
+        lambdaUpdate()
+                .ge(Contract::getEndDate, LocalDateTime.now())
+                .le(Contract::getStartDate, LocalDateTime.now())
+                .eq(Contract::getStatus, 0)
+                .set(Contract::getStatus, 1)
+                // 定时任务无登录用户，手工补齐审计字段
+                .set(Contract::getUpdateTime, new Date())
+                .set(Contract::getUpdateBy, "system")
+                .update();
     }
 }

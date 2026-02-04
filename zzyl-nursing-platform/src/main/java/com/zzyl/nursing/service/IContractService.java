@@ -59,4 +59,11 @@ public interface IContractService extends IService<Contract>
      * @return 结果
      */
     public int deleteContractById(Long id);
+    /*
+     * 定时修改合同状态
+     *
+     * @param contract 合同
+     * @return 合同集合
+     */
+    public void updateContractStatus();
 }

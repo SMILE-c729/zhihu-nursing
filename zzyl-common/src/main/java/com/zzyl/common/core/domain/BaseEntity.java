@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -48,7 +49,7 @@ public class BaseEntity implements Serializable
     /** 更新时间 */
     @ApiModelProperty(value = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField(fill = FieldFill.UPDATE)
+    @TableField(fill = FieldFill.UPDATE, insertStrategy = FieldStrategy.IGNORED)
     private Date updateTime;
 
     /** 备注 */

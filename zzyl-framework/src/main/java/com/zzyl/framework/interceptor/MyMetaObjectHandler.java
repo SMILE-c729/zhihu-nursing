@@ -16,6 +16,9 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         this.strictInsertFill(metaObject, "createBy", String.class, String.valueOf(getLoginUserId()));
         this.strictInsertFill(metaObject, "createTime", Date.class, DateUtils.getNowDate());
+        // 避免新增时数据库触发默认更新时间，显式置空
+        this.setFieldValByName("updateTime", null, metaObject);
+        this.setFieldValByName("updateBy", null, metaObject);
     }
 
     @Override

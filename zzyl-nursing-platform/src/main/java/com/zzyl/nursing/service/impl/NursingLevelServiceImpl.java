@@ -2,9 +2,12 @@ package com.zzyl.nursing.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.zzyl.common.constant.CacheConstants;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.nursing.vo.NursingLevelVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.zzyl.nursing.mapper.NursingLevelMapper;
 import com.zzyl.nursing.domain.NursingLevel;
@@ -22,7 +25,8 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
 {
     @Autowired
     private NursingLevelMapper nursingLevelMapper;
-
+    @Autowired
+    private RedisTemplate<Object, Object> redisTemplate;
     /**
      * 查询护理等级
      * 
@@ -56,7 +60,13 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int insertNursingLevel(NursingLevel nursingLevel)
     {
-        return save(nursingLevel) ? 1 : 0;
+        boolean save = save(nursingLevel);
+        deleteRedis();
+        return save ? 1 : 0;
+    }
+
+    private void deleteRedis() {
+        redisTemplate.delete(CacheConstants.ALL_NURSING_LEVELS);
     }
 
     /**
@@ -68,7 +78,9 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int updateNursingLevel(NursingLevel nursingLevel)
     {
-        return updateById(nursingLevel) ? 1 : 0;
+        boolean byId = updateById(nursingLevel);
+        deleteRedis();
+        return byId ? 1 : 0;
     }
 
     /**
@@ -80,7 +92,9 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int deleteNursingLevelByIds(Long[] ids)
     {
-        return removeByIds(Arrays.asList(ids)) ? 1 : 0;
+        boolean removeById = removeByIds(Arrays.asList(ids));
+        deleteRedis();
+        return removeById ? 1 : 0;
     }
 
     /**
@@ -92,7 +106,9 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public int deleteNursingLevelById(Long id)
     {
-        return removeById(id) ? 1 : 0;
+        boolean byId = removeById(id);
+        deleteRedis();
+        return byId ? 1 : 0;
     }
 
     /**

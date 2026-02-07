@@ -138,5 +138,10 @@ aliyun:
     endpoint: https://oss-cn-beijing.aliyuncs.com
     bucketName: zzyl-gzx
 
+baidu:
+  ai:
+    apiKey: bce-v3/ALTAK-3Nt2UUmbdknbDqV5MeQhw/60a6e03d08641e70c0536265e6a032637eab0308
+    model: ernie-x1-turbo-32k
+    baseUrl: https://qianfan.baidubce.com/v2/
 dept:
   nursingId: 201

@@ -31,10 +31,10 @@ public interface IHealthAssessmentService extends IService<HealthAssessment>
     /**
      * 新增健康评估
      * 
-     * @param healthAssessment 健康评估
+     * @param healthAssessment 健康评估对象
      * @return 结果
      */
-    public int insertHealthAssessment(HealthAssessment healthAssessment);
+    public Long insertHealthAssessment(HealthAssessment healthAssessment);
 
     /**
      * 修改健康评估

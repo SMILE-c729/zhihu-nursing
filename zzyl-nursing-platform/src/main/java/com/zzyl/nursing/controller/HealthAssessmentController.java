@@ -2,11 +2,19 @@ package com.zzyl.nursing.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+import com.zzyl.common.config.RuoYiConfig;
 import com.zzyl.common.core.domain.R;
+import com.zzyl.common.utils.PDFUtil;
+import com.zzyl.common.utils.StringUtils;
+import com.zzyl.common.utils.file.FileUtils;
+import com.zzyl.oss.AliyunOSSOperator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,29 +33,31 @@ import com.zzyl.nursing.domain.HealthAssessment;
 import com.zzyl.nursing.service.IHealthAssessmentService;
 import com.zzyl.common.utils.poi.ExcelUtil;
 import com.zzyl.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 健康评估Controller
- * 
+ *
  * @author alexis
  * @date 2026-02-06
  */
 @Api("健康评估管理")
 @RestController
 @RequestMapping("/nursing/healthAssessment")
-public class HealthAssessmentController extends BaseController
-{
+public class HealthAssessmentController extends BaseController {
     @Autowired
     private IHealthAssessmentService healthAssessmentService;
-
+    @Autowired
+    private AliyunOSSOperator aliyunOSSOperator;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
     /**
      * 查询健康评估列表
      */
     @ApiOperation("查询健康评估列表")
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:list')")
     @GetMapping("/list")
-    public TableDataInfo<List<HealthAssessment>> list(@ApiParam("查询条件对象") HealthAssessment healthAssessment)
-    {
+    public TableDataInfo<List<HealthAssessment>> list(@ApiParam("查询条件对象") HealthAssessment healthAssessment) {
         startPage();
         List<HealthAssessment> list = healthAssessmentService.selectHealthAssessmentList(healthAssessment);
         return getDataTable(list);
@@ -60,8 +70,7 @@ public class HealthAssessmentController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:export')")
     @Log(title = "健康评估", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(@ApiParam("导出的查询条件") HttpServletResponse response, HealthAssessment healthAssessment)
-    {
+    public void export(@ApiParam("导出的查询条件") HttpServletResponse response, HealthAssessment healthAssessment) {
         List<HealthAssessment> list = healthAssessmentService.selectHealthAssessmentList(healthAssessment);
         ExcelUtil<HealthAssessment> util = new ExcelUtil<HealthAssessment>(HealthAssessment.class);
         util.exportExcel(response, list, "健康评估数据");
@@ -73,8 +82,7 @@ public class HealthAssessmentController extends BaseController
     @ApiOperation("获取健康评估详细信息")
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:query')")
     @GetMapping(value = "/{id}")
-    public R<HealthAssessment> getInfo(@PathVariable("id") @ApiParam("健康评估ID") Long id)
-    {
+    public R<HealthAssessment> getInfo(@PathVariable("id") @ApiParam("健康评估ID") Long id) {
         return R.ok(healthAssessmentService.selectHealthAssessmentById(id));
     }
 
@@ -85,9 +93,9 @@ public class HealthAssessmentController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:add')")
     @Log(title = "健康评估", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody @ApiParam("新增的健康评估对象") HealthAssessment healthAssessment)
-    {
-        return toAjax(healthAssessmentService.insertHealthAssessment(healthAssessment));
+    public AjaxResult add(@RequestBody @ApiParam("新增的健康评估对象") HealthAssessment healthAssessment) {
+        Long result = healthAssessmentService.insertHealthAssessment(healthAssessment);
+        return success(result);
     }
 
     /**
@@ -97,8 +105,7 @@ public class HealthAssessmentController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:edit')")
     @Log(title = "健康评估", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody @ApiParam("修改的健康评估对象") HealthAssessment healthAssessment)
-    {
+    public AjaxResult edit(@RequestBody @ApiParam("修改的健康评估对象") HealthAssessment healthAssessment) {
         return toAjax(healthAssessmentService.updateHealthAssessment(healthAssessment));
     }
 
@@ -108,9 +115,50 @@ public class HealthAssessmentController extends BaseController
     @ApiOperation("删除健康评估")
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:remove')")
     @Log(title = "健康评估", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable @ApiParam("要删除的健康评估ID") Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable @ApiParam("要删除的健康评估ID") Long[] ids) {
         return toAjax(healthAssessmentService.deleteHealthAssessmentByIds(ids));
+    }
+
+    /**
+     * 上传体检报告
+     */
+    @ApiOperation("上传体检报告")
+    @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:upload')")
+    @Log(title = "健康评估", businessType = BusinessType.INSERT)
+    @PostMapping("/upload")
+    public AjaxResult upload(@ApiParam("身份证号") @NotBlank(message = "身份证号不能为空") String idCardNo,
+                           @ApiParam("体检报告文件") @NotNull(message = "体检报告文件不能为空") MultipartFile file) {
+        try {
+            // 参数校验
+            if (StringUtils.isNull(idCardNo) ||
+                    StringUtils.isEmpty(idCardNo) ||
+                    "null".equals(idCardNo)) {
+                return AjaxResult.error("身份证号不能为空");
+            }
+            if (file == null || file.isEmpty()) {
+                return AjaxResult.error("体检报告文件不能为空");
+            }
+            
+            // 上传文件路径
+            String filePath = RuoYiConfig.getUploadPath();
+            // 上传并返回新文件名称
+            //String fileName = FileUploadUtils.upload(filePath, file);
+
+            String url = aliyunOSSOperator.upload(file.getBytes(), file.getOriginalFilename());
+            // 读取PDF内容
+            String content = PDFUtil.pdfToString(file.getInputStream());
+            // 存入缓存
+            redisTemplate.opsForHash().put("healthReport", idCardNo, content);
+            //  String url = serverConfig.getUrl() + fileName;
+            AjaxResult ajax = AjaxResult.success();
+            ajax.put("url", url);
+            ajax.put("fileName", url);
+            ajax.put("newFileName", FileUtils.getName(url));
+            ajax.put("originalFilename", file.getOriginalFilename());
+            return ajax;
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        }
     }
 }

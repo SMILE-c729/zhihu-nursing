@@ -2,12 +2,15 @@ package com.zzyl.quartz.mapper;
 
 import java.util.List;
 import com.zzyl.quartz.domain.SysJob;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 调度任务信息 数据层
  * 
  * @author ruoyi
  */
+@Mapper
+
 public interface SysJobMapper
 {
     /**

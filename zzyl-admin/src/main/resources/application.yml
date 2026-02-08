@@ -145,3 +145,8 @@ baidu:
     baseUrl: https://qianfan.baidubce.com/v2/
 dept:
   nursingId: 201
+
+#小程序配置
+wx:
+  appid: wx56fe30c6faa81727
+  secret: 6adda6c90aa612931b17d452350b5823

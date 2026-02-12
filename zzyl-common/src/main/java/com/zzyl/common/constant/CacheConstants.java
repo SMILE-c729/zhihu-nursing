@@ -55,4 +55,8 @@ public class CacheConstants
      * 护理项目 cache key
      */
     public static final String NURSING_PROJECT_KEY = "nursing_project:";
+    /*
+     * 所有产品列表
+     */
+    public static final String PRODUCT_LIST = "product_list";
 }

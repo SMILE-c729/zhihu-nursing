@@ -56,4 +56,28 @@ public interface IDeviceService extends IService<Device> {
      * @return 设备上报数据
      */
     AjaxResult queryServiceProperties(String iotId);
+
+    /**
+     * 修改设备
+     *
+     * @param deviceDto 设备信息
+     * @return 结果
+     */
+    int updateDevice(DeviceDto deviceDto);
+
+    /**
+     * 删除设备
+     *
+     * @param iotId 设备iotId
+     * @return 结果
+     */
+    int deleteDeviceByIotId(String iotId);
+
+    /**
+     * 查询产品详情
+     *
+     * @param productKey 产品id
+     * @return 产品服务能力详情
+     */
+    AjaxResult queryProduct(String productKey);
 }

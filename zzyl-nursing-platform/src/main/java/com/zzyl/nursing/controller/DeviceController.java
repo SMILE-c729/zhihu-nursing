@@ -105,4 +105,36 @@ public class DeviceController extends BaseController {
         AjaxResult ajaxResult = deviceService.queryServiceProperties(iotId);
         return ajaxResult;
     }
+
+    /**
+     * 修改设备
+     */
+    @ApiOperation("修改设备")
+    @PreAuthorize("@ss.hasPermi('nursing:device:edit')")
+    @Log(title = "设备管理", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@RequestBody @ApiParam("修改的设备对象") DeviceDto deviceDto) {
+        return toAjax(deviceService.updateDevice(deviceDto));
+    }
+
+    /**
+     * 删除设备
+     */
+    @ApiOperation("删除设备")
+    @PreAuthorize("@ss.hasPermi('nursing:device:remove')")
+    @Log(title = "设备管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{iotId}")
+    public AjaxResult remove(@PathVariable("iotId") @ApiParam("设备iotId") String iotId) {
+        return toAjax(deviceService.deleteDeviceByIotId(iotId));
+    }
+
+    /**
+     * 查询产品详情
+     */
+    @ApiOperation("查询产品详情")
+    @PreAuthorize("@ss.hasPermi('nursing:device:query')")
+    @GetMapping("/queryProduct/{productKey}")
+    public AjaxResult queryProduct(@PathVariable("productKey") @ApiParam("产品id") String productKey) {
+        return deviceService.queryProduct(productKey);
+    }
 }

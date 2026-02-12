@@ -7,7 +7,9 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.huaweicloud.sdk.core.exception.ServiceResponseException;
 import com.huaweicloud.sdk.core.utils.JsonUtils;
 import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
 import com.huaweicloud.sdk.iotda.v5.model.*;
@@ -252,11 +254,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         ShowDeviceShadowRequest request = new ShowDeviceShadowRequest();
         request.setDeviceId(iotId);
         ShowDeviceShadowResponse response = ioTDAClient.showDeviceShadow(request);
-        if(response.getHttpStatusCode() != 200) {
+        if (response.getHttpStatusCode() != 200) {
             throw new BaseException("物联网接口 - 查询设备影子，调用失败");
         }
         List<DeviceShadowData> shadow = response.getShadow();
-        if(CollUtil.isEmpty(shadow)) {
+        if (CollUtil.isEmpty(shadow)) {
             List<Object> emptyList = Collections.emptyList();
             return AjaxResult.success(emptyList);
         }
@@ -265,7 +267,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         // 把数据转换为JSONObject(map)，方便处理
         JSONObject jsonObject = JSONUtil.parseObj(reported.getProperties());
         // 遍历数据，封装到list中
-        List<Map<String,Object>>  list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<>();
         // 事件上报时间
         String eventTimeStr = reported.getEventTime();
         // 把字符串转换为LocalDateTime
@@ -274,8 +276,8 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         LocalDateTime eventTime = DateTimeZoneConverter.utcToShanghai(eventTimeLocalDateTime);
 
         // k:属性标识，v:属性值
-        jsonObject.forEach((k,v) -> {
-            Map<String,Object> map = new HashMap<>();
+        jsonObject.forEach((k, v) -> {
+            Map<String, Object> map = new HashMap<>();
             map.put("functionId", k);
             map.put("value", v);
             map.put("eventTime", eventTime);
@@ -284,6 +286,133 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
         // 数据返回
         return AjaxResult.success(list);
+    }
+
+    /**
+     * 修改设备
+     *
+     * @param deviceDto 设备信息
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int updateDevice(DeviceDto deviceDto) {
+        // 1.参数校验
+        if (ObjectUtil.isNull(deviceDto)) {
+            throw new BaseException("设备参数不完整");
+        }
+
+        // 4.设备名称唯一性校验（排除自身）
+        Long nameCount = lambdaQuery()
+                .eq(Device::getDeviceName, deviceDto.getDeviceName())
+                .ne(Device::getId, deviceDto.getId())
+                .count();
+        if (nameCount > 0) {
+            throw new BaseException("设备名称已存在");
+        }
+
+        // 5.同位置同产品唯一性校验（排除自身）
+        Long locationProductCount = lambdaQuery()
+                .eq(deviceDto.getBindingLocation() != null, Device::getBindingLocation, deviceDto.getBindingLocation())
+                .eq(deviceDto.getLocationType() != null, Device::getLocationType, deviceDto.getLocationType())
+                .eq(deviceDto.getPhysicalLocationType() != null, Device::getPhysicalLocationType, deviceDto.getPhysicalLocationType())
+                .ne(Device::getId, deviceDto.getId())
+                .count();
+        if (locationProductCount > 0) {
+            throw new BaseException("该位置已绑定相同产品");
+        }
+
+        // 6.同步到物联网平台（同步可变字段）
+        UpdateDeviceRequest request = new UpdateDeviceRequest();
+        request.setDeviceId(deviceDto.getIotId());
+        UpdateDevice body = new UpdateDevice();
+        body.setDeviceName(deviceDto.getDeviceName());
+        request.setBody(body);
+        // 5.调用物联网平台修改设备
+        UpdateDeviceResponse response = ioTDAClient.updateDevice(request);
+        if (response.getHttpStatusCode() != 200) {
+            throw new BaseException("物联网接口 - 修改设备，调用失败");
+        }
+
+        // 7.更新本地设备（保留iotId和secret）
+        Device device = BeanUtil.toBean(deviceDto, Device.class);
+        device.setIotId(response.getDeviceId());
+        device.setNodeId(response.getNodeId());
+        device.setSecret(response.getAuthInfo().getSecret());
+        return updateById(device) ? 1 : 0;
+    }
+
+    /**
+     * 删除设备
+     *
+     * @param iotId 设备iotId
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int deleteDeviceByIotId(String iotId) {
+        // 1.参数校验
+        if (StringUtils.isEmpty(iotId)) {
+            throw new BaseException("设备标识不能为空");
+        }
+
+        // 2.先删除云端设备，404按幂等成功处理
+        DeleteDeviceRequest request = new DeleteDeviceRequest();
+        request.setDeviceId(iotId);
+        try {
+            DeleteDeviceResponse response = ioTDAClient.deleteDevice(request);
+            Integer httpStatusCode = response.getHttpStatusCode();
+            if (ObjectUtil.isNull(httpStatusCode) || (httpStatusCode != 200 && httpStatusCode != 204)) {
+                throw new BaseException("物联网接口 - 删除设备，调用失败");
+            }
+        } catch (ServiceResponseException e) {
+            if (e.getHttpStatusCode() != 404) {
+                throw new BaseException("物联网接口 - 删除设备，调用失败");
+            }
+            log.warn("物联网平台设备不存在，继续执行本地删除，iotId={}" + iotId);
+        } catch (Exception e) {
+            throw new BaseException("物联网接口 - 删除设备，调用失败");
+        }
+
+        // 3.删除本地设备（本地不存在也按成功处理）
+        deviceMapper.delete(new LambdaQueryWrapper<Device>().eq(Device::getIotId, iotId));
+        return 1;
+    }
+
+    /**
+     * 查询产品详情
+     *
+     * @param productKey 产品id
+     * @return 产品服务能力详情
+     */
+    @Override
+    public AjaxResult queryProduct(String productKey) {
+        // 1.参数校验
+        if (StringUtils.isEmpty(productKey)) {
+            throw new BaseException("产品标识不能为空");
+        }
+
+        // 2.调用物联网平台查询产品详情
+        ShowProductRequest request = new ShowProductRequest();
+        request.setProductId(productKey);
+        ShowProductResponse response;
+        try {
+            response = ioTDAClient.showProduct(request);
+        } catch (Exception e) {
+            throw new BaseException("物联网接口 - 查询产品详情，调用失败");
+        }
+
+        Integer httpStatusCode = response.getHttpStatusCode();
+        if (ObjectUtil.isNull(httpStatusCode) || httpStatusCode != 200) {
+            throw new BaseException("物联网接口 - 查询产品详情，调用失败");
+        }
+
+        // 3.返回服务能力列表，空列表时返回空数组
+        List<ServiceCapability> serviceCapabilities = response.getServiceCapabilities();
+        if (CollUtil.isEmpty(serviceCapabilities)) {
+            return AjaxResult.success(Collections.emptyList());
+        }
+        return AjaxResult.success(serviceCapabilities);
     }
 
     /**

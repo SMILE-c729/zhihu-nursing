@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zzyl.common.core.domain.R;
+import com.zzyl.nursing.dto.QueryParm;
 import com.zzyl.nursing.vo.NursingProjectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,10 +48,9 @@ public class NursingProjectController extends BaseController
     @ApiOperation("查询护理项目列表")
     @PreAuthorize("@ss.hasPermi('nursing:project:list')")
     @GetMapping("/list")
-    public TableDataInfo<List<NursingProject>> list(@ApiParam("查询条件对象") NursingProject nursingProject)
+    public TableDataInfo<List<NursingProject>> list(@ApiParam("查询条件对象") QueryParm queryParm)
     {
-        startPage();
-        List<NursingProject> list = nursingProjectService.selectNursingProjectList(nursingProject);
+        List<NursingProject> list = nursingProjectService.selectNursingProjectList(queryParm);
         return getDataTable(list);
     }
 
@@ -61,9 +61,9 @@ public class NursingProjectController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:project:export')")
     @Log(title = "护理项目", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(@ApiParam("导出的查询条件") HttpServletResponse response, NursingProject nursingProject)
+    public void export(@ApiParam("导出的查询条件") HttpServletResponse response, @RequestBody QueryParm queryParm)
     {
-        List<NursingProject> list = nursingProjectService.selectNursingProjectList(nursingProject);
+        List<NursingProject> list = nursingProjectService.selectNursingProjectList(queryParm);
         ExcelUtil<NursingProject> util = new ExcelUtil<NursingProject>(NursingProject.class);
         util.exportExcel(response, list, "护理项目数据");
     }

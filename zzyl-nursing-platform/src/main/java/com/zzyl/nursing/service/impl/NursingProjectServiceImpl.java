@@ -1,28 +1,29 @@
 package com.zzyl.nursing.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzyl.common.constant.CacheConstants;
 import com.zzyl.common.core.redis.RedisCache;
-import com.zzyl.common.utils.DateUtils;
+import com.zzyl.nursing.domain.NursingProject;
+import com.zzyl.nursing.dto.QueryParm;
+import com.zzyl.nursing.mapper.NursingProjectMapper;
+import com.zzyl.nursing.service.INursingProjectService;
 import com.zzyl.nursing.vo.NursingProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.zzyl.nursing.mapper.NursingProjectMapper;
-import com.zzyl.nursing.domain.NursingProject;
-import com.zzyl.nursing.service.INursingProjectService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 护理项目Service业务层处理
- * 
+ *
  * @author alexis
  * @date 2025-06-02
  */
 @Service
-public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper, NursingProject> implements INursingProjectService
-{
+public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper, NursingProject> implements INursingProjectService {
     @Autowired
     private NursingProjectMapper nursingProjectMapper;
 
@@ -36,37 +37,43 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
 
     /**
      * 查询护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 护理项目
      */
     @Override
-    public NursingProject selectNursingProjectById(Long id)
-    {
+    public NursingProject selectNursingProjectById(Long id) {
         return getById(id);
     }
 
     /**
      * 查询护理项目列表
-     * 
-     * @param nursingProject 护理项目
+     *
+     * @param queryParm 查询参数
      * @return 护理项目
      */
     @Override
-    public List<NursingProject> selectNursingProjectList(NursingProject nursingProject)
-    {
-        return nursingProjectMapper.selectNursingProjectList(nursingProject);
+    public List<NursingProject> selectNursingProjectList(QueryParm queryParm) {
+        // 创建分页对象
+        Page<NursingProject> page = new Page<>(queryParm.getPageNum(), queryParm.getPageSize());
+
+        page = lambdaQuery().eq(queryParm.getStatus() != null, NursingProject::getStatus, queryParm.getStatus())
+                .like(queryParm.getName() != null, NursingProject::getName, queryParm.getName())
+                .orderByDesc(NursingProject::getCreateTime)
+                .page(page);
+
+        // 返回查询结果列表
+        return page.getRecords();
     }
 
     /**
      * 新增护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
     @Override
-    public int insertNursingProject(NursingProject nursingProject)
-    {
+    public int insertNursingProject(NursingProject nursingProject) {
         int result = save(nursingProject) ? 1 : 0;
         // 清除护理项目缓存
         clearNursingProjectCache();
@@ -75,13 +82,12 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
 
     /**
      * 修改护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
     @Override
-    public int updateNursingProject(NursingProject nursingProject)
-    {
+    public int updateNursingProject(NursingProject nursingProject) {
         int result = updateById(nursingProject) ? 1 : 0;
         // 清除护理项目缓存
         clearNursingProjectCache();
@@ -90,13 +96,12 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
 
     /**
      * 批量删除护理项目
-     * 
+     *
      * @param ids 需要删除的护理项目主键
      * @return 结果
      */
     @Override
-    public int deleteNursingProjectByIds(Long[] ids)
-    {
+    public int deleteNursingProjectByIds(Long[] ids) {
         int result = removeByIds(Arrays.asList(ids)) ? 1 : 0;
         // 清除护理项目缓存
         clearNursingProjectCache();
@@ -105,13 +110,12 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
 
     /**
      * 删除护理项目信息
-     * 
+     *
      * @param id 护理项目主键
      * @return 结果
      */
     @Override
-    public int deleteNursingProjectById(Long id)
-    {
+    public int deleteNursingProjectById(Long id) {
         int result = removeById(id) ? 1 : 0;
         // 清除护理项目缓存
         clearNursingProjectCache();
@@ -130,16 +134,16 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
         if (cachedProjects != null && !cachedProjects.isEmpty()) {
             return cachedProjects;
         }
-        
+
         // 缓存未命中，从数据库查询
         List<NursingProjectVo> projects = nursingProjectMapper.getAll();
-        
+
         // 将结果存入缓存，设置30分钟过期时间
         redisCache.setCacheObject(NURSING_PROJECT_CACHE_KEY, projects, 30, TimeUnit.MINUTES);
-        
+
         return projects;
     }
-    
+
     /**
      * 清除护理项目缓存
      */

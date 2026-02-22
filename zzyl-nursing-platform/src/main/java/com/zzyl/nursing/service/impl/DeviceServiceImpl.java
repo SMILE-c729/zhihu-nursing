@@ -85,59 +85,6 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        //4.调用物联网平台接口获取设备列表
-        syncDeviceList();
-    }
-
-    /**
-     * 从物联网平台同步设备列表
-     */
-    private void syncDeviceList() {
-        ListDevicesRequest request = new ListDevicesRequest();
-        ListDevicesResponse response = ioTDAClient.listDevices(request);
-        if (response.getHttpStatusCode() != 200) {
-            throw new RuntimeException("获取设备列表失败，HTTP状态码：" + response.getHttpStatusCode());
-        }
-        //3.存入数据库
-        List<QueryDeviceSimplify> devices = response.getDevices();
-        convertToDeviceList(devices);
-    }
-
-    /**
-     * 将物联网平台设备列表转换为本地设备实体列表
-     */
-    private void convertToDeviceList(List<QueryDeviceSimplify> iotDevices) {
-        if (iotDevices.isEmpty()) {
-            return;
-        }
-
-        List<Device> devicesToSave = new ArrayList<>();
-
-        for (QueryDeviceSimplify iotDevice : iotDevices) {
-            // 判断iotDevice.getDeviceId()是否在device数据库中存在
-            Device existingDevice = lambdaQuery()
-                    .eq(Device::getIotId, iotDevice.getDeviceId())
-                    .one();
-
-            if (ObjectUtil.isNull(existingDevice)) {
-                // 如果不存在，创建新设备并添加到保存列表
-                Device device = new Device();
-                device.setIotId(iotDevice.getDeviceId());
-                device.setDeviceName(iotDevice.getDeviceName());
-                device.setProductKey(iotDevice.getProductId());
-                device.setProductName(iotDevice.getProductName());
-                device.setNodeId(iotDevice.getNodeId());
-                // 随机生成密钥
-                String secret = UUID.randomUUID().toString().replaceAll("-", "");
-                device.setSecret(secret);
-                devicesToSave.add(device);
-            }
-            // 如果存在则跳过，不进行任何操作
-        }
-        // 批量保存新增的设备
-        if (!devicesToSave.isEmpty()) {
-            saveBatch(devicesToSave);
-        }
     }
 
     /**

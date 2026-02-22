@@ -1,6 +1,8 @@
 package com.zzyl.nursing.domain;
 
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,6 +27,7 @@ public class DeviceData extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 告警规则ID，自增主键 */
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("告警规则ID，自增主键")
     private Long id;
 

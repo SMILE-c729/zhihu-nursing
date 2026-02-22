@@ -10,12 +10,15 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.zzyl.common.core.page.TableDataInfo;
 import com.zzyl.common.utils.DateTimeZoneConverter;
 import com.zzyl.common.utils.DateUtils;
 import com.zzyl.nursing.domain.Device;
+import com.zzyl.nursing.dto.DeviceDataPageReqDto;
 import com.zzyl.nursing.mapper.DeviceMapper;
 import com.zzyl.nursing.vo.DevicePropertyReportVo;
 import com.zzyl.nursing.vo.NotifyData;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 设备数据Service业务层处理
- *
+ * 设备数据服务层实现
  * @author alexis
  * @date 2026-02-22
  */
@@ -74,21 +76,43 @@ public class DeviceDataServiceImpl extends ServiceImpl<DeviceDataMapper, DeviceD
             // key:属性id，value:属性值
             properties.forEach((k, v) -> {
                 DeviceData deviceData = BeanUtil.toBean(device, DeviceData.class);
-                deviceData.setId(null);
+                deviceData.setId(null);  // 清空ID，让数据库自动生成
+                deviceData.setAccessLocation(device.getBindingLocation());
                 deviceData.setAlarmTime(eventTime);
                 deviceData.setFunctionId(k);
                 deviceData.setDataValue(v + "");
                 list.add(deviceData);
             });
-            // 批量保存设备数据
-            try {
-                saveBatch(list);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            
+            // 批量保存设备数据（如果list为空则跳过）
+            if (CollUtil.isNotEmpty(list)) {
+                try {
+                   saveBatch(list);
+                } catch (Exception e) {
+                  log.error(e.getMessage(), e);
+                    throw e;
+                }
             }
 
         });
 
 
     }
+
+    /**
+     * 查询设备数据列表
+     *
+     * @param deviceDataPageReqDto
+     */
+    @Override
+    public TableDataInfo selectDeviceDataList(DeviceDataPageReqDto deviceDataPageReqDto) {
+        return null;
+    }
 }
+
+
+
+
+
+
+

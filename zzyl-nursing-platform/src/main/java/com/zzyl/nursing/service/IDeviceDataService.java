@@ -1,9 +1,9 @@
 package com.zzyl.nursing.service;
 
-import java.util.List;
-import com.zzyl.nursing.domain.DeviceData;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zzyl.nursing.vo.DevicePropertyReportVo;
+import com.zzyl.common.core.page.TableDataInfo;
+import com.zzyl.nursing.domain.DeviceData;
+import com.zzyl.nursing.dto.DeviceDataPageReqDto;
 import com.zzyl.nursing.vo.NotifyData;
 
 /**
@@ -22,4 +22,9 @@ public interface IDeviceDataService extends IService<DeviceData>
      * @return 结果
      */
     void batchInsertDeviceData(NotifyData notifyData);
+
+    /**
+     * 查询设备数据列表
+     */
+    TableDataInfo selectDeviceDataList(DeviceDataPageReqDto deviceDataPageReqDto);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zzyl.common.core.domain.R;
+import com.zzyl.nursing.dto.DeviceDataPageReqDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,5 +40,14 @@ public class DeviceDataController extends BaseController
 {
     @Autowired
     private IDeviceDataService deviceDataService;
-
+    /**
+     * 查询设备数据列表
+     */
+    @PreAuthorize("@ss.hasPermi('elder:data:list')")
+    @GetMapping("/list")
+    @ApiOperation("查询设备数据列表")
+    public TableDataInfo list(DeviceDataPageReqDto deviceDataPageReqDto)
+    {
+        return deviceDataService.selectDeviceDataList(deviceDataPageReqDto);
+    }
 }

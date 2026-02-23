@@ -6,27 +6,31 @@ import com.zzyl.common.utils.SecurityUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
-    @Autowired
-    private HttpServletRequest request;
-
     @SneakyThrows
     public boolean isExclude() {
-        String requestURI = request.getRequestURI();
-        if(requestURI.startsWith("/member")) {
-            return true;
+        try {
+            // 安全获取当前请求
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            HttpServletRequest request = attributes.getRequest();
+            String requestURI = request.getRequestURI();
+            if(requestURI.startsWith("/member")) {
+                return true;
+            }
+            return false;
+        } catch (IllegalStateException e) {
+            // 非Web线程环境，返回false
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -35,7 +39,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         if(!isExclude()) {
             this.strictInsertFill(metaObject, "createBy", String.class, loadUserId() + "");
         }
-
     }
 
     @Override
@@ -44,7 +47,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         if(!isExclude()) {
             this.setFieldValByName("updateBy", loadUserId() + "", metaObject);
         }
-
     }
 
     /**
@@ -53,7 +55,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      * @return
      */
     private static Long loadUserId() {
-
         // 获取当前登录人的id
         try {
             LoginUser loginUser = SecurityUtils.getLoginUser();

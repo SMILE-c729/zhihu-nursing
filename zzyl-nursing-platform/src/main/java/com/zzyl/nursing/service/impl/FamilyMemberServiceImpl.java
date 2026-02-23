@@ -1,18 +1,12 @@
 package com.zzyl.nursing.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zzyl.common.exception.ServiceException;
 import com.zzyl.common.utils.StringUtils;
 import com.zzyl.framework.web.service.TokenService;
+import com.zzyl.nursing.service.impl.WxChatLoginImpl;
 import com.zzyl.nursing.domain.FamilyMember;
 import com.zzyl.nursing.dto.UserLoginRequestDto;
 import com.zzyl.nursing.mapper.FamilyMemberMapper;
@@ -21,7 +15,10 @@ import com.zzyl.nursing.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 家庭成员服务实现

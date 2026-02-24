@@ -39,6 +39,17 @@ public class RoomController extends BaseController
         return R.ok(list);
     }
 
+    /**
+     * 根据楼层ID获取房间中的智能设备及数据
+     */
+    @GetMapping("/getRoomsWithDeviceByFloorId/{floorId}")
+    @ApiOperation("根据楼层ID获取房间中的智能设备及数据")
+    public R<List<RoomVo>> getRoomsWithDeviceByFloorId(
+            @ApiParam(value = "楼层ID", required = true) @PathVariable Long floorId) {
+        List<RoomVo> list = roomService.getRoomsWithDeviceByFloorId(floorId);
+        return R.ok(list);
+    }
+
     @GetMapping("/getRoomsByFloorId/{floorId}")
     @ApiOperation("获取所有房间（入住配置）")
     public R<List<RoomVo>> getRoomsByFloorId(@ApiParam(value = "楼层ID", required = true)  @PathVariable Long floorId) {

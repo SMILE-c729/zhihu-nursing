@@ -31,4 +31,10 @@ public class RoomVo {
     @ApiModelProperty(value = "床位列表", required = true)
     private List<BedVo> bedVoList;
 
+    @ApiModelProperty(value = "房间设备列表")
+    private List<DeviceVo> deviceVos;
+    /**
+     * 关联的设备
+     */
+    private List<DeviceInfo> Devices;
 }

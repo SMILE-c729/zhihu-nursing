@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzyl.nursing.domain.Floor;
 import com.zzyl.nursing.vo.FloorRoomBedTreeVo;
 import com.zzyl.nursing.vo.FloorRoomBedVo;
+import com.zzyl.nursing.vo.FloorVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -72,7 +73,14 @@ public interface FloorMapper extends BaseMapper<Floor>
     List<Floor> selectAllByNur();
 
     /**
-     * Query floors/rooms/beds by bed status.
+     * 查询所有有智能设备的楼层
+     *
+     * @return 楼层列表
+     */
+    List<FloorVo> selectAllByDevice();
+
+    /**
+     * 根据床位状态查询获取所有楼层数据
      *
      * @param status bed status
      * @return rows for tree building

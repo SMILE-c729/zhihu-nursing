@@ -8,6 +8,7 @@ import com.zzyl.common.enums.BusinessType;
 import com.zzyl.nursing.domain.Floor;
 import com.zzyl.nursing.service.IFloorService;
 import com.zzyl.nursing.vo.FloorRoomBedTreeVo;
+import com.zzyl.nursing.vo.FloorVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -97,11 +98,21 @@ public class FloorController extends BaseController
         return R.ok(list);
     }
 
+    /**
+     * 获取所有有智能设备的楼层
+     */
+    @GetMapping("/getAllFloorsWithDevice")
+    @ApiOperation(value = "获取所有有智能设备的楼层", notes = "无需参数，返回存在智能设备的楼层列表")
+    public R<List<FloorVo>> getAllFloorsWithDevice() {
+        List<FloorVo> list = floorService.selectAllByDevice();
+        return R.ok(list);
+    }
+
     /*
     * 1.3 根据床位状态查询获取所有楼层数据
     * */
     @GetMapping("/getRoomAndBedByBedStatus/{status}")
-    @ApiOperation("Get floors/rooms/beds by bed status")
+    @ApiOperation("根据床位状态查询获取所有楼层数据")
     public R<List<FloorRoomBedTreeVo>> getRoomAndBedByBedStatus(
             @ApiParam(value = "bed status", required = true) @PathVariable Integer status) {
         return R.ok(floorService.getRoomAndBedByBedStatus(status));

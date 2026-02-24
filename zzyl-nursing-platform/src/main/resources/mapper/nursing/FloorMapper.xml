@@ -90,6 +90,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by code, create_time desc
     </select>
 
+    <select id="selectAllByDevice" resultType="com.zzyl.nursing.vo.FloorVo">
+        select f.id, f.name, f.code
+        from floor f
+                 left join room r on r.floor_id = f.id
+                 left join bed b on b.room_id = r.id
+                 left join device d
+                           on d.binding_location = b.id and d.location_type = 1 and d.physical_location_type = 2
+                 left join device rd
+                           on rd.binding_location = r.id and rd.location_type = 1 and rd.physical_location_type = 1
+        where d.id is not null
+           or rd.id is not null
+        group by f.id
+    </select>
+
 
     <resultMap type="com.zzyl.nursing.vo.FloorRoomBedTreeVo" id="FloorRoomBedResult">
         <result property="value" column="floorId"/>

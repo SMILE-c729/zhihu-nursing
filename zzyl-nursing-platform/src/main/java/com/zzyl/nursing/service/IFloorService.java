@@ -3,6 +3,7 @@ package com.zzyl.nursing.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zzyl.nursing.domain.Floor;
 import com.zzyl.nursing.vo.FloorRoomBedTreeVo;
+import com.zzyl.nursing.vo.FloorVo;
 
 import java.util.List;
 
@@ -59,6 +60,13 @@ public interface IFloorService extends IService<Floor>
      * @return
      */
     List<Floor> selectAllByNur();
+
+    /**
+     * 查询所有有智能设备的楼层
+     *
+     * @return 楼层列表
+     */
+    List<FloorVo> selectAllByDevice();
 
     /**
      * Get floor/room/bed tree by bed status.

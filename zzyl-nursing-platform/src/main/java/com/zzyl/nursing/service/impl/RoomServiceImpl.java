@@ -120,7 +120,7 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
 
     @Override
     public List<RoomVo> getRoomsWithNurByFloorId(Long floorId) {
-        // 1. 查询楼层下房间和床位基础信息
+      /*  // 1. 查询楼层下房间和床位基础信息
         List<RoomVo> roomVos = roomMapper.selectByFloorId(floorId);
         if (roomVos == null || roomVos.isEmpty()) {
             return roomVos;
@@ -173,7 +173,9 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
                 bedVo.setDeviceVos(bedDeviceVos == null ? new ArrayList<>() : bedDeviceVos);
             }
         }
-        return roomVos;
+        return roomVos;*/
+        return roomMapper.selectByFloorIdWithNur(floorId);
+
     }
 
     /**
@@ -225,13 +227,13 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         return roomMapper.getRoomById(id);
     }
 
-    /**
+/*    *//**
      * 按绑定位置查询固定设备
      *
      * @param physicalLocationType 物理位置类型：1房间，2床位
      * @param locationIds          绑定位置ID集合
      * @return 设备列表
-     */
+     *//*
     private List<Device> selectFixedDevicesByLocation(Integer physicalLocationType, Set<String> locationIds) {
         if (locationIds == null || locationIds.isEmpty()) {
             return Collections.emptyList();
@@ -242,14 +244,14 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
                 .in(Device::getBindingLocation, locationIds)
                 .orderByAsc(Device::getId);
         return deviceMapper.selectList(queryWrapper);
-    }
+    }*/
 
-    /**
+ /*   *//**
      * 组装每个设备最新的功能数据（每个功能保留一条最新记录）
      *
      * @param devices 设备列表
      * @return key=iotId，value=设备数据列表
-     */
+     *//*
     private Map<String, List<DeviceDataVo>> buildLatestDeviceDataMap(List<Device> devices) {
         if (devices == null || devices.isEmpty()) {
             return Collections.emptyMap();
@@ -298,15 +300,15 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         Map<String, List<DeviceDataVo>> result = new HashMap<>();
         latestDataMap.forEach((iotId, functionDataMap) -> result.put(iotId, new ArrayList<>(functionDataMap.values())));
         return result;
-    }
+    }*/
 
-    /**
+/*    *//**
      * 按绑定位置组装设备列表
      *
      * @param devices       设备列表
      * @param deviceDataMap key=iotId，value=设备数据列表
      * @return key=位置ID，value=设备列表
-     */
+     *//*
     private Map<Long, List<DeviceVo>> buildLocationDeviceMap(List<Device> devices,
                                                              Map<String, List<DeviceDataVo>> deviceDataMap) {
         if (devices == null || devices.isEmpty()) {
@@ -327,9 +329,9 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         return result;
     }
 
-    /**
+    *//**
      * 字符串转Long，失败返回null
-     */
+     *//*
     private Long parseLong(String value) {
         if (isBlank(value)) {
             return null;
@@ -341,10 +343,10 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements IR
         }
     }
 
-    /**
+    *//**
      * 判空字符串
-     */
+     *//*
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
-    }
+    }*/
 }

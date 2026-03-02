@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzyl.nursing.domain.DeviceData;
 import lombok.Getter;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -73,4 +74,18 @@ public interface DeviceMapper extends BaseMapper<Device> {
      */
     @Select("SELECT * FROM device WHERE iot_id = #{deviceId}")
     Device selectDeviceByDeviceId(String deviceId);
+
+    /**
+     * 根据随身设备id查询老人关联的护理人员id列表
+     * @param iotId 设备id
+     * @return  护理人员列表
+     */
+    List<Long> selectNursingIdsByIotIdWithElder(@Param("iotId") String iotId);
+
+    /**
+     * 根据固定设备id查询老人关联的护理人员id列表(床关联设备)
+     * @param iotId 设备id
+     * @return  护理人员列表
+     */
+    List<Long> selectNursingIdsByIotIdWithBed(@Param("iotId") String iotId);
 }

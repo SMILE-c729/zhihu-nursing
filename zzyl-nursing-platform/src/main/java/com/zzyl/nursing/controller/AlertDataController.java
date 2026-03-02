@@ -30,7 +30,7 @@ import com.zzyl.common.core.page.TableDataInfo;
  * 报警数据Controller
  * 
  * @author alexis
- * @date 2025-07-16
+ * @date 2026-02-24
  */
 @Api("报警数据管理")
 @RestController
@@ -44,7 +44,7 @@ public class AlertDataController extends BaseController
      * 查询报警数据列表
      */
     @ApiOperation("查询报警数据列表")
-    @PreAuthorize("@ss.hasPermi('nursing:alertData:list')")
+    @PreAuthorize("@ss.hasPermi('nursing:data:list')")
     @GetMapping("/list")
     public TableDataInfo<List<AlertData>> list(@ApiParam("查询条件对象") AlertData alertData)
     {
@@ -57,7 +57,7 @@ public class AlertDataController extends BaseController
      * 导出报警数据列表
      */
     @ApiOperation("导出报警数据列表")
-    @PreAuthorize("@ss.hasPermi('nursing:alertData:export')")
+    @PreAuthorize("@ss.hasPermi('nursing:data:export')")
     @Log(title = "报警数据", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(@ApiParam("导出的查询条件") HttpServletResponse response, AlertData alertData)
@@ -71,7 +71,7 @@ public class AlertDataController extends BaseController
      * 获取报警数据详细信息
      */
     @ApiOperation("获取报警数据详细信息")
-    @PreAuthorize("@ss.hasPermi('nursing:alertData:query')")
+    @PreAuthorize("@ss.hasPermi('nursing:data:query')")
     @GetMapping(value = "/{id}")
     public R<AlertData> getInfo(@PathVariable("id") @ApiParam("报警数据ID") Long id)
     {
@@ -82,7 +82,7 @@ public class AlertDataController extends BaseController
      * 新增报警数据
      */
     @ApiOperation("新增报警数据")
-    @PreAuthorize("@ss.hasPermi('nursing:alertData:add')")
+    @PreAuthorize("@ss.hasPermi('nursing:data:add')")
     @Log(title = "报警数据", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody @ApiParam("新增的报警数据对象") AlertData alertData)
@@ -94,7 +94,7 @@ public class AlertDataController extends BaseController
      * 修改报警数据
      */
     @ApiOperation("修改报警数据")
-    @PreAuthorize("@ss.hasPermi('nursing:alertData:edit')")
+    @PreAuthorize("@ss.hasPermi('nursing:data:edit')")
     @Log(title = "报警数据", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody @ApiParam("修改的报警数据对象") AlertData alertData)
@@ -106,7 +106,7 @@ public class AlertDataController extends BaseController
      * 删除报警数据
      */
     @ApiOperation("删除报警数据")
-    @PreAuthorize("@ss.hasPermi('nursing:alertData:remove')")
+    @PreAuthorize("@ss.hasPermi('nursing:data:remove')")
     @Log(title = "报警数据", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable @ApiParam("要删除的报警数据ID") Long[] ids)

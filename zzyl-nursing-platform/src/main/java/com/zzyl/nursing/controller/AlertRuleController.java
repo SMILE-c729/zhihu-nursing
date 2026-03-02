@@ -27,12 +27,12 @@ import com.zzyl.common.utils.poi.ExcelUtil;
 import com.zzyl.common.core.page.TableDataInfo;
 
 /**
- * 报警规则Controller
+ * 报警规则功能Controller
  * 
  * @author alexis
- * @date 2025-07-14
+ * @date 2026-02-24
  */
-@Api("报警规则管理")
+@Api("报警规则功能管理")
 @RestController
 @RequestMapping("/nursing/alertRule")
 public class AlertRuleController extends BaseController
@@ -41,9 +41,9 @@ public class AlertRuleController extends BaseController
     private IAlertRuleService alertRuleService;
 
     /**
-     * 查询报警规则列表
+     * 查询报警规则功能列表
      */
-    @ApiOperation("查询报警规则列表")
+    @ApiOperation("查询报警规则功能列表")
     @PreAuthorize("@ss.hasPermi('nursing:alertRule:list')")
     @GetMapping("/list")
     public TableDataInfo<List<AlertRule>> list(@ApiParam("查询条件对象") AlertRule alertRule)
@@ -54,62 +54,62 @@ public class AlertRuleController extends BaseController
     }
 
     /**
-     * 导出报警规则列表
+     * 导出报警规则功能列表
      */
-    @ApiOperation("导出报警规则列表")
+    @ApiOperation("导出报警规则功能列表")
     @PreAuthorize("@ss.hasPermi('nursing:alertRule:export')")
-    @Log(title = "报警规则", businessType = BusinessType.EXPORT)
+    @Log(title = "报警规则功能", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(@ApiParam("导出的查询条件") HttpServletResponse response, AlertRule alertRule)
     {
         List<AlertRule> list = alertRuleService.selectAlertRuleList(alertRule);
         ExcelUtil<AlertRule> util = new ExcelUtil<AlertRule>(AlertRule.class);
-        util.exportExcel(response, list, "报警规则数据");
+        util.exportExcel(response, list, "报警规则功能数据");
     }
 
     /**
-     * 获取报警规则详细信息
+     * 获取报警规则功能详细信息
      */
-    @ApiOperation("获取报警规则详细信息")
+    @ApiOperation("获取报警规则功能详细信息")
     @PreAuthorize("@ss.hasPermi('nursing:alertRule:query')")
     @GetMapping(value = "/{id}")
-    public R<AlertRule> getInfo(@PathVariable("id") @ApiParam("报警规则ID") Long id)
+    public R<AlertRule> getInfo(@PathVariable("id") @ApiParam("报警规则功能ID") Long id)
     {
         return R.ok(alertRuleService.selectAlertRuleById(id));
     }
 
     /**
-     * 新增报警规则
+     * 新增报警规则功能
      */
-    @ApiOperation("新增报警规则")
+    @ApiOperation("新增报警规则功能")
     @PreAuthorize("@ss.hasPermi('nursing:alertRule:add')")
-    @Log(title = "报警规则", businessType = BusinessType.INSERT)
+    @Log(title = "报警规则功能", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody @ApiParam("新增的报警规则对象") AlertRule alertRule)
+    public AjaxResult add(@RequestBody @ApiParam("新增的报警规则功能对象") AlertRule alertRule)
     {
         return toAjax(alertRuleService.insertAlertRule(alertRule));
     }
 
     /**
-     * 修改报警规则
+     * 修改报警规则功能
      */
-    @ApiOperation("修改报警规则")
+    @ApiOperation("修改报警规则功能")
     @PreAuthorize("@ss.hasPermi('nursing:alertRule:edit')")
-    @Log(title = "报警规则", businessType = BusinessType.UPDATE)
+    @Log(title = "报警规则功能", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody @ApiParam("修改的报警规则对象") AlertRule alertRule)
+    public AjaxResult edit(@RequestBody @ApiParam("修改的报警规则功能对象") AlertRule alertRule)
     {
         return toAjax(alertRuleService.updateAlertRule(alertRule));
     }
 
     /**
-     * 删除报警规则
+     * 删除报警规则功能
      */
-    @ApiOperation("删除报警规则")
+    @ApiOperation("删除报警规则功能")
     @PreAuthorize("@ss.hasPermi('nursing:alertRule:remove')")
-    @Log(title = "报警规则", businessType = BusinessType.DELETE)
+    @Log(title = "报警规则功能", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable @ApiParam("要删除的报警规则ID") Long[] ids)
+    public AjaxResult remove(@PathVariable @ApiParam("要删除的报警规则功能ID") Long[] ids)
     {
         return toAjax(alertRuleService.deleteAlertRuleByIds(ids));
     }

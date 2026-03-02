@@ -59,3 +59,7 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+
+alert:
+  deviceMaintainerRole: 维修工
+  managerRole: 超级管理员

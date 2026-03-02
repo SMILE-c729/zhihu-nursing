@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  * 报警数据Service业务层处理
  * 
  * @author alexis
- * @date 2025-07-16
+ * @date 2026-02-24
  */
 @Service
 public class AlertDataServiceImpl extends ServiceImpl<AlertDataMapper, AlertData> implements IAlertDataService

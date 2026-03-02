@@ -63,4 +63,15 @@ public class CacheConstants
     *设备数据缓存key
     * */
     public static final String IOT_DEVICE_LAST_DATA = "iot:device_last_data";
+
+    /**
+     * 报警规则连续触发次数，缓存前缀
+     */
+    public static final String ALERT_TRIGGER_COUNT_PREFIX = "iot:alert_trigger_count:";
+    /**
+     * 报警规则沉默周期，缓存前缀
+     */
+    public static final String ALERT_SILENT_PREFIX = "iot:alert_silent:";
+
+
 }

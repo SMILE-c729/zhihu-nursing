@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * 报警数据Service接口
  * 
  * @author alexis
- * @date 2025-07-16
+ * @date 2026-02-24
  */
 public interface IAlertDataService extends IService<AlertData>
 {

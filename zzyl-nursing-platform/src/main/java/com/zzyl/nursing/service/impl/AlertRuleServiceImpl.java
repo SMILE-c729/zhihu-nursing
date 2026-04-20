@@ -21,10 +21,12 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zzyl.common.constant.CacheConstants;
 import com.zzyl.common.utils.DateUtils;
+import com.zzyl.nursing.config.WebSocketServer;
 import com.zzyl.nursing.domain.AlertData;
 import com.zzyl.nursing.domain.DeviceData;
 import com.zzyl.nursing.mapper.DeviceMapper;
 import com.zzyl.nursing.service.IAlertDataService;
+import com.zzyl.nursing.vo.AlertNotifyVo;
 import com.zzyl.system.mapper.SysUserRoleMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,9 +270,36 @@ public class AlertRuleServiceImpl extends ServiceImpl<AlertRuleMapper, AlertRule
         // 去重
         allUserIds = CollUtil.distinct(allUserIds);
 
-        // 保存报警数据
-        insertAlertData(allUserIds, rule, deviceData);
+        // 批量保存异常数据
+        List<AlertData> alertDataList = insertAlertData(allUserIds, deviceData, rule);
+
+        // websocket推送消息
+        webSocketNotity(alertDataList.get(0), rule, allUserIds);
     }
+
+    @Autowired
+    private WebSocketServer webSocketServer;
+
+    /**
+     * websocket推送消息
+     * @param alertData
+     * @param rule
+     * @param allUserIds
+     */
+    private void webSocketNotity(AlertData alertData, AlertRule rule, Collection<Long> allUserIds) {
+
+        //属性拷贝
+        AlertNotifyVo alertNotifyVo = BeanUtil.toBean(alertData, AlertNotifyVo.class);
+        alertNotifyVo.setAccessLocation(alertData.getRemark());
+        alertNotifyVo.setFunctionName(rule.getFunctionName());
+        alertNotifyVo.setAlertDataType(rule.getAlertDataType());
+        alertNotifyVo.setNotifyType(1);
+        // 向指定的人推送消息
+        webSocketServer.sendMessageToConsumer(alertNotifyVo, allUserIds);
+
+    }
+
+
 
     /**
      * 保存报警数据
@@ -279,8 +308,7 @@ public class AlertRuleServiceImpl extends ServiceImpl<AlertRuleMapper, AlertRule
      * @param rule
      * @param deviceData
      */
-    private void insertAlertData(Collection<Long> allUserIds, AlertRule rule, DeviceData deviceData) {
-        // 对象拷贝
+    private List<AlertData> insertAlertData(Collection<Long> allUserIds, DeviceData deviceData, AlertRule rule) {        // 对象拷贝
         AlertData alertData = BeanUtil.toBean(deviceData, AlertData.class);
         alertData.setAlertRuleId(rule.getId());
         // 心率<60,持续3个周期就报警
@@ -298,6 +326,6 @@ public class AlertRuleServiceImpl extends ServiceImpl<AlertRuleMapper, AlertRule
 
         // 批量保存
         alertDataService.saveBatch(list);
-
+        return list;
     }
 }

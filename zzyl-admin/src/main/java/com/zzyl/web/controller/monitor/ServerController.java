@@ -4,6 +4,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import com.zzyl.common.core.domain.AjaxResult;
 import com.zzyl.framework.web.domain.Server;
 
@@ -12,10 +14,12 @@ import com.zzyl.framework.web.domain.Server;
  * 
  * @author ruoyi
  */
+@Api(tags = "服务监控")
 @RestController
 @RequestMapping("/monitor/server")
 public class ServerController
 {
+    @ApiOperation("获取服务器信息")
     @PreAuthorize("@ss.hasPermi('monitor:server:list')")
     @GetMapping()
     public AjaxResult getInfo() throws Exception

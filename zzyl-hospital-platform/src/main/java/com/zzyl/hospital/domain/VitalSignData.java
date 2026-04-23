@@ -1,0 +1,90 @@
+package com.zzyl.hospital.domain;
+
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import com.zzyl.common.annotation.Excel;
+import com.zzyl.common.core.domain.BaseEntity;
+
+/**
+ * 设备数据对象 vital_sign_data
+ * 
+ * @author alexis
+ * @date 2026-02-22
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value="VitalSignData对象", description="设备数据")
+public class VitalSignData extends BaseEntity
+{
+    private static final long serialVersionUID = 1L;
+
+    /** 告警规则ID，自增主键 */
+    @TableId(type = IdType.AUTO)
+    @ApiModelProperty("告警规则ID，自增主键")
+    private Long id;
+
+    /** 设备名称 */
+    @Excel(name = "设备名称")
+    @ApiModelProperty("设备名称")
+    private String monitoringDeviceName;
+
+    /** 设备ID */
+    @Excel(name = "设备ID")
+    @ApiModelProperty("设备ID")
+    private String iotId;
+
+    /** 所属产品的key */
+    @Excel(name = "所属产品的key")
+    @ApiModelProperty("所属产品的key")
+    private String productKey;
+
+    /** 产品名称 */
+    @Excel(name = "产品名称")
+    @ApiModelProperty("产品名称")
+    private String productName;
+
+    /** 功能名称 */
+    @Excel(name = "功能名称")
+    @ApiModelProperty("功能名称")
+    private String functionId;
+
+    /** 接入位置 */
+    @Excel(name = "接入位置")
+    @ApiModelProperty("接入位置")
+    private String accessLocation;
+
+    /** 位置类型 0：随身设备 1：固定设备 */
+    @Excel(name = "位置类型 0：随身设备 1：固定设备")
+    @ApiModelProperty("位置类型 0：随身设备 1：固定设备")
+    private Integer locationType;
+
+    /** 物理位置类型 0楼层 1房间 2病床 */
+    @Excel(name = "物理位置类型 0楼层 1房间 2病床")
+    @ApiModelProperty("物理位置类型 0楼层 1房间 2病床")
+    private Integer physicalLocationType;
+
+    /** 位置备注 */
+    @Excel(name = "位置备注")
+    @ApiModelProperty("位置备注")
+    private String monitoringDeviceDescription;
+
+    /** 数据值 */
+    @Excel(name = "数据值")
+    @ApiModelProperty("数据值")
+    private String dataValue;
+
+    /** 数据上报时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "数据上报时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("数据上报时间")
+    private LocalDateTime alarmTime;
+
+}

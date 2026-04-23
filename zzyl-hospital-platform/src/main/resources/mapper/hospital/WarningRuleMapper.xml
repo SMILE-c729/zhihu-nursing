@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.WarningRuleMapper">
+    
+    <resultMap type="WarningRule" id="WarningRuleResult">
+        <result property="id"    column="id"    />
+        <result property="productKey"    column="product_key"    />
+        <result property="productName"    column="product_name"    />
+        <result property="moduleId"    column="module_id"    />
+        <result property="moduleName"    column="module_name"    />
+        <result property="functionName"    column="function_name"    />
+        <result property="functionId"    column="function_id"    />
+        <result property="iotId"    column="iot_id"    />
+        <result property="monitoringDeviceName"    column="monitoring_device_name"    />
+        <result property="warningDataType"    column="warning_data_type"    />
+        <result property="warningRuleName"    column="warning_rule_name"    />
+        <result property="operator"    column="operator"    />
+        <result property="value"    column="value"    />
+        <result property="duration"    column="duration"    />
+        <result property="warningEffectivePeriod"    column="warning_effective_period"    />
+        <result property="warningSilentPeriod"    column="warning_silent_period"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWarningRuleVo">
+        select id, product_key, product_name, module_id, module_name, function_name, function_id, iot_id, monitoring_device_name, warning_data_type, warning_rule_name, operator, value, duration, warning_effective_period, warning_silent_period, status, create_time, update_time, create_by, update_by, remark from warning_rule
+    </sql>
+
+    <select id="selectWarningRuleList" parameterType="WarningRule" resultMap="WarningRuleResult">
+        <include refid="selectWarningRuleVo"/>
+        <where>  
+            <if test="productKey != null  and productKey != ''"> and product_key = #{productKey}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="moduleId != null  and moduleId != ''"> and module_id = #{moduleId}</if>
+            <if test="moduleName != null  and moduleName != ''"> and module_name like concat('%', #{moduleName}, '%')</if>
+            <if test="functionName != null  and functionName != ''"> and function_name like concat('%', #{functionName}, '%')</if>
+            <if test="functionId != null  and functionId != ''"> and function_id = #{functionId}</if>
+            <if test="iotId != null  and iotId != ''"> and iot_id = #{iotId}</if>
+            <if test="monitoringDeviceName != null  and monitoringDeviceName != ''"> and monitoring_device_name like concat('%', #{monitoringDeviceName}, '%')</if>
+            <if test="warningDataType != null "> and warning_data_type = #{warningDataType}</if>
+            <if test="warningRuleName != null  and warningRuleName != ''"> and warning_rule_name like concat('%', #{warningRuleName}, '%')</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+            <if test="value != null "> and value = #{value}</if>
+            <if test="duration != null "> and duration = #{duration}</if>
+            <if test="warningEffectivePeriod != null  and warningEffectivePeriod != ''"> and warning_effective_period = #{warningEffectivePeriod}</if>
+            <if test="warningSilentPeriod != null "> and warning_silent_period = #{warningSilentPeriod}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectWarningRuleById" parameterType="Long" resultMap="WarningRuleResult">
+        <include refid="selectWarningRuleVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWarningRule" parameterType="WarningRule" useGeneratedKeys="true" keyProperty="id">
+        insert into warning_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productKey != null">product_key,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="moduleId != null">module_id,</if>
+            <if test="moduleName != null">module_name,</if>
+            <if test="functionName != null">function_name,</if>
+            <if test="functionId != null">function_id,</if>
+            <if test="iotId != null">iot_id,</if>
+            <if test="monitoringDeviceName != null">monitoring_device_name,</if>
+            <if test="warningDataType != null">warning_data_type,</if>
+            <if test="warningRuleName != null">warning_rule_name,</if>
+            <if test="operator != null">operator,</if>
+            <if test="value != null">value,</if>
+            <if test="duration != null">duration,</if>
+            <if test="warningEffectivePeriod != null">warning_effective_period,</if>
+            <if test="warningSilentPeriod != null">warning_silent_period,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productKey != null">#{productKey},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="moduleId != null">#{moduleId},</if>
+            <if test="moduleName != null">#{moduleName},</if>
+            <if test="functionName != null">#{functionName},</if>
+            <if test="functionId != null">#{functionId},</if>
+            <if test="iotId != null">#{iotId},</if>
+            <if test="monitoringDeviceName != null">#{monitoringDeviceName},</if>
+            <if test="warningDataType != null">#{warningDataType},</if>
+            <if test="warningRuleName != null">#{warningRuleName},</if>
+            <if test="operator != null">#{operator},</if>
+            <if test="value != null">#{value},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="warningEffectivePeriod != null">#{warningEffectivePeriod},</if>
+            <if test="warningSilentPeriod != null">#{warningSilentPeriod},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWarningRule" parameterType="WarningRule">
+        update warning_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productKey != null">product_key = #{productKey},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="moduleId != null">module_id = #{moduleId},</if>
+            <if test="moduleName != null">module_name = #{moduleName},</if>
+            <if test="functionName != null">function_name = #{functionName},</if>
+            <if test="functionId != null">function_id = #{functionId},</if>
+            <if test="iotId != null">iot_id = #{iotId},</if>
+            <if test="monitoringDeviceName != null">monitoring_device_name = #{monitoringDeviceName},</if>
+            <if test="warningDataType != null">warning_data_type = #{warningDataType},</if>
+            <if test="warningRuleName != null">warning_rule_name = #{warningRuleName},</if>
+            <if test="operator != null">operator = #{operator},</if>
+            <if test="value != null">value = #{value},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="warningEffectivePeriod != null">warning_effective_period = #{warningEffectivePeriod},</if>
+            <if test="warningSilentPeriod != null">warning_silent_period = #{warningSilentPeriod},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWarningRuleById" parameterType="Long">
+        delete from warning_rule where id = #{id}
+    </delete>
+
+    <delete id="deleteWarningRuleByIds" parameterType="String">
+        delete from warning_rule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

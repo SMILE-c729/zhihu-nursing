@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.AdmissionMapper">
+    
+    <resultMap type="Admission" id="AdmissionResult">
+        <result property="id"    column="id"    />
+        <result property="patientName"    column="patient_name"    />
+        <result property="patientId"    column="patient_id"    />
+        <result property="idCardNo"    column="id_card_no"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="careLevelName"    column="care_level_name"    />
+        <result property="wardBedNo"    column="ward_bed_no"    />
+        <result property="status"    column="status"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAdmissionVo">
+        select id, patient_name, patient_id, id_card_no, start_date, end_date, care_level_name, ward_bed_no, status, sort_order, create_time, update_time, create_by, update_by, remark from admission
+    </sql>
+
+    <select id="selectAdmissionList" parameterType="Admission" resultMap="AdmissionResult">
+        <include refid="selectAdmissionVo"/>
+        <where>  
+            <if test="patientName != null  and patientName != ''"> and patient_name like concat('%', #{patientName}, '%')</if>
+            <if test="patientId != null "> and patient_id = #{patientId}</if>
+            <if test="idCardNo != null  and idCardNo != ''"> and id_card_no = #{idCardNo}</if>
+            <if test="startDate != null "> and start_date = #{startDate}</if>
+            <if test="endDate != null "> and end_date = #{endDate}</if>
+            <if test="careLevelName != null  and careLevelName != ''"> and care_level_name like concat('%', #{careLevelName}, '%')</if>
+            <if test="wardBedNo != null  and wardBedNo != ''"> and ward_bed_no = #{wardBedNo}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+        </where>
+    </select>
+    
+    <select id="selectAdmissionById" parameterType="Long" resultMap="AdmissionResult">
+        <include refid="selectAdmissionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAdmission" parameterType="Admission" useGeneratedKeys="true" keyProperty="id">
+        insert into admission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patientName != null and patientName != ''">patient_name,</if>
+            <if test="patientId != null">patient_id,</if>
+            <if test="idCardNo != null and idCardNo != ''">id_card_no,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="careLevelName != null and careLevelName != ''">care_level_name,</if>
+            <if test="wardBedNo != null and wardBedNo != ''">ward_bed_no,</if>
+            <if test="status != null">status,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patientName != null and patientName != ''">#{patientName},</if>
+            <if test="patientId != null">#{patientId},</if>
+            <if test="idCardNo != null and idCardNo != ''">#{idCardNo},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="careLevelName != null and careLevelName != ''">#{careLevelName},</if>
+            <if test="wardBedNo != null and wardBedNo != ''">#{wardBedNo},</if>
+            <if test="status != null">#{status},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAdmission" parameterType="Admission">
+        update admission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="patientName != null and patientName != ''">patient_name = #{patientName},</if>
+            <if test="patientId != null">patient_id = #{patientId},</if>
+            <if test="idCardNo != null and idCardNo != ''">id_card_no = #{idCardNo},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="careLevelName != null and careLevelName != ''">care_level_name = #{careLevelName},</if>
+            <if test="wardBedNo != null and wardBedNo != ''">ward_bed_no = #{wardBedNo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdmissionById" parameterType="Long">
+        delete from admission where id = #{id}
+    </delete>
+
+    <delete id="deleteAdmissionByIds" parameterType="String">
+        delete from admission where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

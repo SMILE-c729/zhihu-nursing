@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.VitalSignDataMapper">
+    
+    <resultMap type="VitalSignData" id="VitalSignDataResult">
+        <result property="id"    column="id"    />
+        <result property="monitoringDeviceName"    column="monitoring_device_name"    />
+        <result property="iotId"    column="iot_id"    />
+        <result property="productKey"    column="product_key"    />
+        <result property="productName"    column="product_name"    />
+        <result property="functionId"    column="function_id"    />
+        <result property="accessLocation"    column="access_location"    />
+        <result property="locationType"    column="location_type"    />
+        <result property="physicalLocationType"    column="physical_location_type"    />
+        <result property="monitoringDeviceDescription"    column="monitoring_device_description"    />
+        <result property="dataValue"    column="data_value"    />
+        <result property="alarmTime"    column="alarm_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectVitalSignDataVo">
+        select id, monitoring_device_name, iot_id, product_key, product_name, function_id, access_location, location_type, physical_location_type, monitoring_device_description, data_value, alarm_time, create_time, update_time, create_by, update_by, remark from vital_sign_data
+    </sql>
+
+    <select id="selectVitalSignDataList" parameterType="VitalSignData" resultMap="VitalSignDataResult">
+        <include refid="selectVitalSignDataVo"/>
+        <where>  
+            <if test="monitoringDeviceName != null  and monitoringDeviceName != ''"> and monitoring_device_name like concat('%', #{monitoringDeviceName}, '%')</if>
+            <if test="iotId != null  and iotId != ''"> and iot_id = #{iotId}</if>
+            <if test="productKey != null  and productKey != ''"> and product_key = #{productKey}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="functionId != null  and functionId != ''"> and function_id = #{functionId}</if>
+            <if test="accessLocation != null  and accessLocation != ''"> and access_location = #{accessLocation}</if>
+            <if test="locationType != null "> and location_type = #{locationType}</if>
+            <if test="physicalLocationType != null "> and physical_location_type = #{physicalLocationType}</if>
+            <if test="monitoringDeviceDescription != null  and monitoringDeviceDescription != ''"> and monitoring_device_description = #{monitoringDeviceDescription}</if>
+            <if test="dataValue != null  and dataValue != ''"> and data_value = #{dataValue}</if>
+            <if test="alarmTime != null "> and alarm_time = #{alarmTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectVitalSignDataById" parameterType="Long" resultMap="VitalSignDataResult">
+        <include refid="selectVitalSignDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertVitalSignData" parameterType="VitalSignData" useGeneratedKeys="true" keyProperty="id">
+        insert into vital_sign_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="monitoringDeviceName != null">monitoring_device_name,</if>
+            <if test="iotId != null">iot_id,</if>
+            <if test="productKey != null">product_key,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="functionId != null">function_id,</if>
+            <if test="accessLocation != null">access_location,</if>
+            <if test="locationType != null">location_type,</if>
+            <if test="physicalLocationType != null">physical_location_type,</if>
+            <if test="monitoringDeviceDescription != null">monitoring_device_description,</if>
+            <if test="dataValue != null">data_value,</if>
+            <if test="alarmTime != null">alarm_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="monitoringDeviceName != null">#{monitoringDeviceName},</if>
+            <if test="iotId != null">#{iotId},</if>
+            <if test="productKey != null">#{productKey},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="functionId != null">#{functionId},</if>
+            <if test="accessLocation != null">#{accessLocation},</if>
+            <if test="locationType != null">#{locationType},</if>
+            <if test="physicalLocationType != null">#{physicalLocationType},</if>
+            <if test="monitoringDeviceDescription != null">#{monitoringDeviceDescription},</if>
+            <if test="dataValue != null">#{dataValue},</if>
+            <if test="alarmTime != null">#{alarmTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVitalSignData" parameterType="VitalSignData">
+        update vital_sign_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="monitoringDeviceName != null">monitoring_device_name = #{monitoringDeviceName},</if>
+            <if test="iotId != null">iot_id = #{iotId},</if>
+            <if test="productKey != null">product_key = #{productKey},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="functionId != null">function_id = #{functionId},</if>
+            <if test="accessLocation != null">access_location = #{accessLocation},</if>
+            <if test="locationType != null">location_type = #{locationType},</if>
+            <if test="physicalLocationType != null">physical_location_type = #{physicalLocationType},</if>
+            <if test="monitoringDeviceDescription != null">monitoring_device_description = #{monitoringDeviceDescription},</if>
+            <if test="dataValue != null">data_value = #{dataValue},</if>
+            <if test="alarmTime != null">alarm_time = #{alarmTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteVitalSignDataById" parameterType="Long">
+        delete from vital_sign_data where id = #{id}
+    </delete>
+
+    <delete id="deleteVitalSignDataByIds" parameterType="String">
+        delete from vital_sign_data where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -44,17 +44,17 @@ public class CacheConstants
     /*
      * 所有护理等级
     * */
-    public static final String ALL_NURSING_LEVELS = "all_nursing_levels";
+    public static final String ALL_CARE_LEVELS = "all_care_levels";
     
     /**
      * 护理计划 cache key
      */
-    public static final String NURSING_PLAN_KEY = "nursing_plan:";
+    public static final String CARE_PLAN_KEY = "care_plan:";
     
     /**
      * 护理项目 cache key
      */
-    public static final String NURSING_PROJECT_KEY = "nursing_project:";
+    public static final String MEDICAL_ORDER_ITEM_KEY = "medical_order_item:";
     /*
      * 所有产品列表
      */
@@ -62,16 +62,16 @@ public class CacheConstants
     /*
     *设备数据缓存key
     * */
-    public static final String IOT_DEVICE_LAST_DATA = "iot:device_last_data";
+    public static final String IOT_MONITORING_DEVICE_LAST_DATA = "iot:monitoringDevice_last_data";
 
     /**
      * 报警规则连续触发次数，缓存前缀
      */
-    public static final String ALERT_TRIGGER_COUNT_PREFIX = "iot:alert_trigger_count:";
+    public static final String WARNING_TRIGGER_COUNT_PREFIX = "iot:warning_trigger_count:";
     /**
      * 报警规则沉默周期，缓存前缀
      */
-    public static final String ALERT_SILENT_PREFIX = "iot:alert_silent:";
+    public static final String WARNING_SILENT_PREFIX = "iot:warning_silent:";
 
 
 }

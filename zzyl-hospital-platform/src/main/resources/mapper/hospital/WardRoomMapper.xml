@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.WardRoomMapper">
+    
+    <resultMap type="WardRoom" id="WardRoomResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="sort"    column="sort"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="wardFloorId"    column="ward_floor_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isDeleted"    column="is_deleted"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWardRoomVo">
+        select id, code, sort, type_name, ward_floor_id, create_time, update_time, is_deleted, create_by, update_by, remark from ward_room
+    </sql>
+
+    <select id="selectWardRoomList" parameterType="WardRoom" resultMap="WardRoomResult">
+        <include refid="selectWardRoomVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="wardFloorId != null "> and ward_floor_id = #{wardFloorId}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectWardRoomById" parameterType="Long" resultMap="WardRoomResult">
+        <include refid="selectWardRoomVo"/>
+        where id = #{id}
+    </select>
+
+
+    <resultMap id="wardRoomVoResultMap" type="com.zzyl.hospital.vo.WardRoomVo">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="wardFloorId" column="ward_floor_id"/>
+        <result property="wardFloorName" column="fname"/>
+        <result column="price" property="price"/>
+        <collection property="wardBedVoList" ofType="com.zzyl.hospital.vo.WardBedVo">
+            <id column="bid" property="id"/>
+            <result column="ward_bed_no" property="wardBedNo"/>
+            <result column="ward_bed_status" property="wardBedStatus"/>
+            <result column="ward_room_id" property="wardRoomId"/>
+            <result column="ename" property="ename"/>
+            <result column="eid" property="patientId"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectByWardFloorId" resultMap="wardRoomVoResultMap">
+        select r.*,
+               f.name  as fname,
+               rt.*,
+               b.id    as bid,
+               b.ward_bed_no,
+               b.sort,
+               b.ward_bed_status,
+               b.ward_room_id,
+               b.create_by,
+               b.update_by,
+               b.remark,
+               b.create_time,
+               b.update_time,
+               e.name  as ename,
+               e.id    as eid
+        from ward_room r
+                 left join ward_floor f on f.id = r.ward_floor_id
+                 left join ward_room_type rt on rt.name = r.type_name
+                 left join ward_bed b on b.ward_room_id = r.id
+                 left join patient e on b.id = e.ward_bed_id
+        where r.ward_floor_id = #{wardFloorId}
+        order by r.sort, r.create_time desc
+    </select>
+
+
+
+    <resultMap id="wardRoomVoMonitoringDeviceByWardFloorIdResultMap" type="com.zzyl.hospital.vo.WardRoomVo">
+        <id column="id" property="id"></id>
+        <result column="code" property="code"></result>
+        <collection property="wardBedVoList" ofType="com.zzyl.hospital.vo.WardBedVo">
+            <id column="bid" property="id"/>
+            <result column="ward_bed_no" property="wardBedNo"></result>
+            <result column="ward_bed_status" property="wardBedStatus"></result>
+            <result column="eid" property="patientId"></result>
+            <result column="ename" property="ename"></result>
+            <collection property="MonitoringDevices" ofType="com.zzyl.hospital.vo.MonitoringDeviceInfo">
+                <id column="b_did" property="id"/>
+                <result column="b_iot_id" property="iotId"></result>
+                <result column="b_monitoring_device_name" property="monitoringDeviceName"></result>
+                <result column="b_product_key" property="productKey"></result>
+                <result column="b_product_name" property="productName"></result>
+            </collection>
+        </collection>
+        <collection property="MonitoringDevices" ofType="com.zzyl.hospital.vo.MonitoringDeviceInfo">
+            <id column="did" property="id"/>
+            <result column="iot_id" property="iotId"></result>
+            <result column="monitoring_device_name" property="monitoringDeviceName"></result>
+            <result column="product_key" property="productKey"></result>
+            <result column="product_name" property="productName"></result>
+        </collection>
+    </resultMap>
+
+    <resultMap id="wardRoomVoWithNurResultMap" type="com.zzyl.hospital.vo.WardRoomVo">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="wardFloorId" column="ward_floor_id"/>
+        <result property="wardFloorName" column="fname"/>
+        <result column="price" property="price"/>
+        <collection property="wardBedVoList" ofType="com.zzyl.hospital.vo.WardBedVo">
+            <id column="bid" property="id"/>
+            <result column="ward_bed_no" property="wardBedNo"/>
+            <result column="ward_bed_status" property="wardBedStatus"/>
+            <result column="ward_room_id" property="wardRoomId"/>
+            <result column="ename" property="ename"/>
+            <result column="eid" property="patientId"/>
+            <collection property="userVos" ofType="com.zzyl.common.core.domain.entity.SysUser" column="eid"
+                        select="com.zzyl.hospital.mapper.NursePatientMapper.selectUserByPatientId">
+                <result column="nick_name" property="nickName"/>
+                <result column="userId" property="userId"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectByWardFloorIdWithNur" resultMap="wardRoomVoWithNurResultMap">
+        select r.*,
+               b.id   as bid,
+               b.ward_bed_no,
+               b.sort,
+               b.ward_bed_status,
+               b.ward_room_id,
+               e.name as ename,
+               e.id   as eid
+        from ward_room r
+                 left join ward_bed b on b.ward_room_id = r.id
+                 left join patient e on e.ward_bed_id = b.id
+        where r.ward_floor_id = #{wardFloorId}
+          and e.id is not null
+        order by r.sort, r.create_time desc
+    </select>
+
+
+    <select id="getWardRoomsWithMonitoringDeviceByWardFloorId" resultMap="wardRoomVoMonitoringDeviceByWardFloorIdResultMap" >
+        select r.id ,
+               r.code,
+               b.id bid,
+               b.ward_bed_no,
+               b.ward_bed_status,
+               e.id eid,
+               e.name ename,
+               d.id did ,
+               d.iot_id ,
+               d.monitoring_device_name,
+               d.product_key,
+               d.product_name,
+               dd.id b_did ,
+               dd.iot_id  b_iot_id,
+               dd.monitoring_device_name b_monitoring_device_name,
+               dd.product_key b_product_key,
+               dd.product_name b_product_name
+        from ward_room r left join ward_bed b on r.id = b.ward_room_id
+                    left join  patient e on b.id = e.ward_bed_id
+                    left join monitoring_device d on d.binding_location = r.id and d.location_type = 1 and d.physical_location_type = 1
+                    left join monitoring_device dd on dd.binding_location = b.id and dd.location_type = 1 and dd.physical_location_type = 2
+        where r.ward_floor_id = #{wardFloorId} and  (d.id is not null or dd.id is not null)
+    </select>
+
+
+    <insert id="insertWardRoom" parameterType="WardRoom" useGeneratedKeys="true" keyProperty="id">
+        insert into ward_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null">code,</if>
+            <if test="sort != null">sort,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="wardFloorId != null">ward_floor_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null">#{code},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="wardFloorId != null">#{wardFloorId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWardRoom" parameterType="WardRoom">
+        update ward_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="wardFloorId != null">ward_floor_id = #{wardFloorId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWardRoomById" parameterType="Long">
+        delete from ward_room where id = #{id}
+    </delete>
+
+    <select id="getWardRoomById" parameterType="Long" resultType="com.zzyl.hospital.vo.WardRoomVo">
+        select r.id wardRoomId,
+               r.code ,
+               r.ward_floor_id wardFloorId,
+               f.name  wardFloorName,
+               rt.price
+        from ward_room r
+        left join ward_floor f on r.ward_floor_id = f.id
+        left join ward_room_type rt on rt.name = r.type_name
+        where r.id = #{id}
+    </select>
+
+    <delete id="deleteWardRoomByIds" parameterType="String">
+        delete from ward_room where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

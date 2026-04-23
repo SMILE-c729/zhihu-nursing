@@ -60,6 +60,6 @@ spring:
                     config:
                         multi-statement-allow: true
 
-alert:
-  deviceMaintainerRole: 维修工
+warning:
+  monitoringDeviceMaintainerRole: 设备维修员
   managerRole: 超级管理员

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -10,7 +10,7 @@
 
     <name>zzyl</name>
     <url>http://www.ruoyi.vip</url>
-    <description>中州养老</description>
+    <description>智护云医管</description>
 
     <properties>
         <zzyl.version>3.8.9</zzyl.version>
@@ -91,19 +91,19 @@
 
             <!-- 覆盖tomcat的依赖配置-->
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
+                <groupId>org.apache.tomcat.emwardBed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
                 <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
+                <groupId>org.apache.tomcat.emwardBed</groupId>
                 <artifactId>tomcat-embed-el</artifactId>
                 <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
+                <groupId>org.apache.tomcat.emwardBed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${tomcat.version}</version>
             </dependency>
@@ -229,7 +229,7 @@
             <!--护理平台模块-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-nursing-platform</artifactId>
+                <artifactId>zzyl-hospital-platform</artifactId>
                 <version>${zzyl.version}</version>
             </dependency>
 
@@ -237,6 +237,11 @@
             <dependency>
                 <groupId>com.zzyl</groupId>
                 <artifactId>zzyl-oss</artifactId>
+                <version>${zzyl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zzyl</groupId>
+                <artifactId>zzyl-ai</artifactId>
                 <version>${zzyl.version}</version>
             </dependency>
 
@@ -360,8 +365,9 @@
         <module>zzyl-quartz</module>
         <module>zzyl-generator</module>
         <module>zzyl-common</module>
-        <module>zzyl-nursing-platform</module>
+        <module>zzyl-hospital-platform</module>
         <module>zzyl-oss</module>
+        <module>zzyl-ai</module>
     </modules>
     <packaging>pom</packaging>
 

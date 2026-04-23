@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import com.zzyl.common.annotation.Log;
 import com.zzyl.common.constant.UserConstants;
 import com.zzyl.common.core.controller.BaseController;
@@ -26,6 +29,7 @@ import com.zzyl.system.service.ISysMenuService;
  * 
  * @author ruoyi
  */
+@Api(tags = "菜单管理")
 @RestController
 @RequestMapping("/system/menu")
 public class SysMenuController extends BaseController
@@ -36,6 +40,7 @@ public class SysMenuController extends BaseController
     /**
      * 获取菜单列表
      */
+    @ApiOperation("获取菜单列表")
     @PreAuthorize("@ss.hasPermi('system:menu:list')")
     @GetMapping("/list")
     public AjaxResult list(SysMenu menu)
@@ -47,9 +52,10 @@ public class SysMenuController extends BaseController
     /**
      * 根据菜单编号获取详细信息
      */
+    @ApiOperation("根据菜单编号获取详细信息")
     @PreAuthorize("@ss.hasPermi('system:menu:query')")
     @GetMapping(value = "/{menuId}")
-    public AjaxResult getInfo(@PathVariable Long menuId)
+    public AjaxResult getInfo(@ApiParam("菜单ID") @PathVariable Long menuId)
     {
         return success(menuService.selectMenuById(menuId));
     }
@@ -57,6 +63,7 @@ public class SysMenuController extends BaseController
     /**
      * 获取菜单下拉树列表
      */
+    @ApiOperation("获取菜单下拉树列表")
     @GetMapping("/treeselect")
     public AjaxResult treeselect(SysMenu menu)
     {
@@ -67,8 +74,9 @@ public class SysMenuController extends BaseController
     /**
      * 加载对应角色菜单列表树
      */
+    @ApiOperation("加载对应角色菜单列表树")
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public AjaxResult roleMenuTreeselect(@PathVariable("roleId") Long roleId)
+    public AjaxResult roleMenuTreeselect(@ApiParam("角色ID") @PathVariable("roleId") Long roleId)
     {
         List<SysMenu> menus = menuService.selectMenuList(getUserId());
         AjaxResult ajax = AjaxResult.success();
@@ -80,10 +88,11 @@ public class SysMenuController extends BaseController
     /**
      * 新增菜单
      */
+    @ApiOperation("新增菜单")
     @PreAuthorize("@ss.hasPermi('system:menu:add')")
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysMenu menu)
+    public AjaxResult add(@ApiParam("菜单信息") @Validated @RequestBody SysMenu menu)
     {
         if (!menuService.checkMenuNameUnique(menu))
         {
@@ -100,10 +109,11 @@ public class SysMenuController extends BaseController
     /**
      * 修改菜单
      */
+    @ApiOperation("修改菜单")
     @PreAuthorize("@ss.hasPermi('system:menu:edit')")
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysMenu menu)
+    public AjaxResult edit(@ApiParam("菜单信息") @Validated @RequestBody SysMenu menu)
     {
         if (!menuService.checkMenuNameUnique(menu))
         {
@@ -124,10 +134,11 @@ public class SysMenuController extends BaseController
     /**
      * 删除菜单
      */
+    @ApiOperation("删除菜单")
     @PreAuthorize("@ss.hasPermi('system:menu:remove')")
     @Log(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
-    public AjaxResult remove(@PathVariable("menuId") Long menuId)
+    public AjaxResult remove(@ApiParam("菜单ID") @PathVariable("menuId") Long menuId)
     {
         if (menuService.hasChildByMenuId(menuId))
         {

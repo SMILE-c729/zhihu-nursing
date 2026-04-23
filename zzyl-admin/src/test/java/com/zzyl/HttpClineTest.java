@@ -1,6 +1,6 @@
 package com.zzyl;
 
-import com.zzyl.nursing.service.impl.WxChatLoginImpl;
+import com.zzyl.hospital.service.impl.WxChatLoginImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

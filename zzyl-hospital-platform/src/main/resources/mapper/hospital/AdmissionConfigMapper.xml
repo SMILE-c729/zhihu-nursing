@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.AdmissionConfigMapper">
+    
+    <resultMap type="AdmissionConfig" id="AdmissionConfigResult">
+        <result property="id"    column="id"    />
+        <result property="admissionId"    column="admission_id"    />
+        <result property="careLevelId"    column="care_level_id"    />
+        <result property="careLevelName"    column="care_level_name"    />
+        <result property="feeStartDate"    column="fee_start_date"    />
+        <result property="feeEndDate"    column="fee_end_date"    />
+        <result property="deposit"    column="deposit"    />
+        <result property="careFee"    column="care_fee"    />
+        <result property="wardBedFee"    column="ward_bed_fee"    />
+        <result property="insurancePayment"    column="insurance_payment"    />
+        <result property="governmentSubsidy"    column="government_subsidy"    />
+        <result property="otherFees"    column="other_fees"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAdmissionConfigVo">
+        select id, admission_id, care_level_id, care_level_name, fee_start_date, fee_end_date, deposit, care_fee, ward_bed_fee, insurance_payment, government_subsidy, other_fees, sort_order, create_time, update_time, create_by, update_by, remark from admission_config
+    </sql>
+
+    <select id="selectAdmissionConfigList" parameterType="AdmissionConfig" resultMap="AdmissionConfigResult">
+        <include refid="selectAdmissionConfigVo"/>
+        <where>  
+            <if test="admissionId != null "> and admission_id = #{admissionId}</if>
+            <if test="careLevelId != null "> and care_level_id = #{careLevelId}</if>
+            <if test="careLevelName != null  and careLevelName != ''"> and care_level_name like concat('%', #{careLevelName}, '%')</if>
+            <if test="feeStartDate != null "> and fee_start_date = #{feeStartDate}</if>
+            <if test="feeEndDate != null "> and fee_end_date = #{feeEndDate}</if>
+            <if test="deposit != null "> and deposit = #{deposit}</if>
+            <if test="careFee != null "> and care_fee = #{careFee}</if>
+            <if test="wardBedFee != null "> and ward_bed_fee = #{wardBedFee}</if>
+            <if test="insurancePayment != null "> and insurance_payment = #{insurancePayment}</if>
+            <if test="governmentSubsidy != null "> and government_subsidy = #{governmentSubsidy}</if>
+            <if test="otherFees != null "> and other_fees = #{otherFees}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+        </where>
+    </select>
+    
+    <select id="selectAdmissionConfigById" parameterType="Long" resultMap="AdmissionConfigResult">
+        <include refid="selectAdmissionConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAdmissionConfig" parameterType="AdmissionConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into admission_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="admissionId != null">admission_id,</if>
+            <if test="careLevelId != null">care_level_id,</if>
+            <if test="careLevelName != null and careLevelName != ''">care_level_name,</if>
+            <if test="feeStartDate != null">fee_start_date,</if>
+            <if test="feeEndDate != null">fee_end_date,</if>
+            <if test="deposit != null">deposit,</if>
+            <if test="careFee != null">care_fee,</if>
+            <if test="wardBedFee != null">ward_bed_fee,</if>
+            <if test="insurancePayment != null">insurance_payment,</if>
+            <if test="governmentSubsidy != null">government_subsidy,</if>
+            <if test="otherFees != null">other_fees,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="admissionId != null">#{admissionId},</if>
+            <if test="careLevelId != null">#{careLevelId},</if>
+            <if test="careLevelName != null and careLevelName != ''">#{careLevelName},</if>
+            <if test="feeStartDate != null">#{feeStartDate},</if>
+            <if test="feeEndDate != null">#{feeEndDate},</if>
+            <if test="deposit != null">#{deposit},</if>
+            <if test="careFee != null">#{careFee},</if>
+            <if test="wardBedFee != null">#{wardBedFee},</if>
+            <if test="insurancePayment != null">#{insurancePayment},</if>
+            <if test="governmentSubsidy != null">#{governmentSubsidy},</if>
+            <if test="otherFees != null">#{otherFees},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAdmissionConfig" parameterType="AdmissionConfig">
+        update admission_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="admissionId != null">admission_id = #{admissionId},</if>
+            <if test="careLevelId != null">care_level_id = #{careLevelId},</if>
+            <if test="careLevelName != null and careLevelName != ''">care_level_name = #{careLevelName},</if>
+            <if test="feeStartDate != null">fee_start_date = #{feeStartDate},</if>
+            <if test="feeEndDate != null">fee_end_date = #{feeEndDate},</if>
+            <if test="deposit != null">deposit = #{deposit},</if>
+            <if test="careFee != null">care_fee = #{careFee},</if>
+            <if test="wardBedFee != null">ward_bed_fee = #{wardBedFee},</if>
+            <if test="insurancePayment != null">insurance_payment = #{insurancePayment},</if>
+            <if test="governmentSubsidy != null">government_subsidy = #{governmentSubsidy},</if>
+            <if test="otherFees != null">other_fees = #{otherFees},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdmissionConfigById" parameterType="Long">
+        delete from admission_config where id = #{id}
+    </delete>
+
+    <delete id="deleteAdmissionConfigByIds" parameterType="String">
+        delete from admission_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

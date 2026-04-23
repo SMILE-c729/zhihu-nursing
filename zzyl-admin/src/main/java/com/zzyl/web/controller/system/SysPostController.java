@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import com.zzyl.common.annotation.Log;
 import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
@@ -27,6 +30,7 @@ import com.zzyl.system.service.ISysPostService;
  * 
  * @author ruoyi
  */
+@Api(tags = "岗位管理")
 @RestController
 @RequestMapping("/system/post")
 public class SysPostController extends BaseController
@@ -37,6 +41,7 @@ public class SysPostController extends BaseController
     /**
      * 获取岗位列表
      */
+    @ApiOperation("获取岗位列表")
     @PreAuthorize("@ss.hasPermi('system:post:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysPost post)
@@ -46,6 +51,7 @@ public class SysPostController extends BaseController
         return getDataTable(list);
     }
     
+    @ApiOperation("导出岗位数据")
     @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:post:export')")
     @PostMapping("/export")
@@ -59,9 +65,10 @@ public class SysPostController extends BaseController
     /**
      * 根据岗位编号获取详细信息
      */
+    @ApiOperation("根据岗位编号获取详细信息")
     @PreAuthorize("@ss.hasPermi('system:post:query')")
     @GetMapping(value = "/{postId}")
-    public AjaxResult getInfo(@PathVariable Long postId)
+    public AjaxResult getInfo(@ApiParam("岗位ID") @PathVariable Long postId)
     {
         return success(postService.selectPostById(postId));
     }
@@ -69,10 +76,11 @@ public class SysPostController extends BaseController
     /**
      * 新增岗位
      */
+    @ApiOperation("新增岗位")
     @PreAuthorize("@ss.hasPermi('system:post:add')")
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysPost post)
+    public AjaxResult add(@ApiParam("岗位信息") @Validated @RequestBody SysPost post)
     {
         if (!postService.checkPostNameUnique(post))
         {
@@ -89,10 +97,11 @@ public class SysPostController extends BaseController
     /**
      * 修改岗位
      */
+    @ApiOperation("修改岗位")
     @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysPost post)
+    public AjaxResult edit(@ApiParam("岗位信息") @Validated @RequestBody SysPost post)
     {
         if (!postService.checkPostNameUnique(post))
         {
@@ -109,10 +118,11 @@ public class SysPostController extends BaseController
     /**
      * 删除岗位
      */
+    @ApiOperation("删除岗位")
     @PreAuthorize("@ss.hasPermi('system:post:remove')")
     @Log(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
-    public AjaxResult remove(@PathVariable Long[] postIds)
+    public AjaxResult remove(@ApiParam("岗位ID列表") @PathVariable Long[] postIds)
     {
         return toAjax(postService.deletePostByIds(postIds));
     }
@@ -120,6 +130,7 @@ public class SysPostController extends BaseController
     /**
      * 获取岗位选择框列表
      */
+    @ApiOperation("获取岗位选择框列表")
     @GetMapping("/optionselect")
     public AjaxResult optionselect()
     {

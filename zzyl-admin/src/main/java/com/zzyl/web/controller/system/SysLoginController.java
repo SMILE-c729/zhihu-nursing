@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import com.zzyl.common.constant.Constants;
 import com.zzyl.common.core.domain.AjaxResult;
 import com.zzyl.common.core.domain.entity.SysMenu;
@@ -24,6 +27,7 @@ import com.zzyl.system.service.ISysMenuService;
  * 
  * @author ruoyi
  */
+@Api(tags = "登录认证")
 @RestController
 public class SysLoginController
 {
@@ -45,8 +49,9 @@ public class SysLoginController
      * @param loginBody 登录信息
      * @return 结果
      */
+    @ApiOperation("用户登录")
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody LoginBody loginBody)
+    public AjaxResult login(@ApiParam("登录信息") @RequestBody LoginBody loginBody)
     {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
@@ -61,6 +66,7 @@ public class SysLoginController
      * 
      * @return 用户信息
      */
+    @ApiOperation("获取用户信息")
     @GetMapping("getInfo")
     public AjaxResult getInfo()
     {
@@ -87,6 +93,7 @@ public class SysLoginController
      * 
      * @return 路由信息
      */
+    @ApiOperation("获取路由信息")
     @GetMapping("getRouters")
     public AjaxResult getRouters()
     {

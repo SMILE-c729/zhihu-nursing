@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import com.zzyl.common.annotation.Log;
 import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
@@ -25,6 +28,7 @@ import com.zzyl.system.service.ISysNoticeService;
  * 
  * @author ruoyi
  */
+@Api(tags = "通知公告")
 @RestController
 @RequestMapping("/system/notice")
 public class SysNoticeController extends BaseController
@@ -35,6 +39,7 @@ public class SysNoticeController extends BaseController
     /**
      * 获取通知公告列表
      */
+    @ApiOperation("获取通知公告列表")
     @PreAuthorize("@ss.hasPermi('system:notice:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysNotice notice)
@@ -47,9 +52,10 @@ public class SysNoticeController extends BaseController
     /**
      * 根据通知公告编号获取详细信息
      */
+    @ApiOperation("根据通知公告编号获取详细信息")
     @PreAuthorize("@ss.hasPermi('system:notice:query')")
     @GetMapping(value = "/{noticeId}")
-    public AjaxResult getInfo(@PathVariable Long noticeId)
+    public AjaxResult getInfo(@ApiParam("通知公告ID") @PathVariable Long noticeId)
     {
         return success(noticeService.selectNoticeById(noticeId));
     }
@@ -57,10 +63,11 @@ public class SysNoticeController extends BaseController
     /**
      * 新增通知公告
      */
+    @ApiOperation("新增通知公告")
     @PreAuthorize("@ss.hasPermi('system:notice:add')")
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysNotice notice)
+    public AjaxResult add(@ApiParam("通知公告信息") @Validated @RequestBody SysNotice notice)
     {
         notice.setCreateBy(getUsername());
         return toAjax(noticeService.insertNotice(notice));
@@ -69,10 +76,11 @@ public class SysNoticeController extends BaseController
     /**
      * 修改通知公告
      */
+    @ApiOperation("修改通知公告")
     @PreAuthorize("@ss.hasPermi('system:notice:edit')")
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysNotice notice)
+    public AjaxResult edit(@ApiParam("通知公告信息") @Validated @RequestBody SysNotice notice)
     {
         notice.setUpdateBy(getUsername());
         return toAjax(noticeService.updateNotice(notice));
@@ -81,10 +89,11 @@ public class SysNoticeController extends BaseController
     /**
      * 删除通知公告
      */
+    @ApiOperation("删除通知公告")
     @PreAuthorize("@ss.hasPermi('system:notice:remove')")
     @Log(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
-    public AjaxResult remove(@PathVariable Long[] noticeIds)
+    public AjaxResult remove(@ApiParam("通知公告ID列表") @PathVariable Long[] noticeIds)
     {
         return toAjax(noticeService.deleteNoticeByIds(noticeIds));
     }

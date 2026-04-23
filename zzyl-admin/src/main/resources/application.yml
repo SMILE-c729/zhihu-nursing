@@ -1,4 +1,4 @@
-﻿# 项目相关配置
+# 项目相关配置
 ruoyi:
   # 名称
   name: RuoYi
@@ -15,6 +15,7 @@ ruoyi:
 
 # 开发环境配置
 server:
+  address: 0.0.0.0
   # 服务器的HTTP端口，默认为8080
   port: 8080
   servlet:
@@ -53,6 +54,17 @@ spring:
     basename: i18n/messages
   profiles:
     active: druid
+  # Flyway数据库版本管理
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    encoding: UTF-8
+    baseline-on-migrate: true
+    baseline-version: "0"
+    validate-on-migrate: true
+    out-of-order: false
+    clean-disabled: true
   # 文件上传
   servlet:
     multipart:
@@ -144,12 +156,32 @@ baidu:
     model: ernie-x1-turbo-32k
     baseUrl: https://qianfan.baidubce.com/v2/
 dept:
-  nursingId: 201
+  nurseId: 201
 
 #小程序配置
 wx:
   appid: wx56fe30c6faa81727
   secret: 6adda6c90aa612931b17d452350b5823
+
+zzyl:
+  ai:
+    dify:
+      # 替换为你自己的 Dify base-url，通常以 /v1 结尾
+      base-url: http://localhost:5001/v1/workflows/run
+      # 替换为你自己的 Dify 应用 API Key
+      api-key: app-oIalDiU57Oa8QS89psFCIfBG
+      connect-timeout: 5000
+      read-timeout: 180000
+      write-timeout: 30000
+    conversation:
+      session-ttl-minutes: 1440
+      max-context-message-size: 12
+      max-context-message-chars: 1200
+      max-context-total-chars: 6000
+      max-session-message-size: 80
+    tool:
+      # Dify 调用当前项目工具接口时使用的访问密钥
+      api-key: demo-dify-tool-key
 
 # 华为IOT配置
 huawei:

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.CarePlanOrderItemMapper">
+
+    <resultMap type="CarePlanOrderItem" id="CarePlanOrderItemResult">
+        <result property="id"    column="id"    />
+        <result property="carePlanId"    column="care_plan_id"    />
+        <result property="medicalOrderItemId"    column="medical_order_item_id"    />
+        <result property="executeTime"    column="execute_time"    />
+        <result property="executeCycle"    column="execute_cycle"    />
+        <result property="executeFrequency"    column="execute_frequency"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectCarePlanOrderItemVo">
+        select id, care_plan_id, medical_order_item_id, execute_time, execute_cycle, execute_frequency, create_time, update_time, create_by, update_by, remark from care_plan_order_item
+    </sql>
+
+    <select id="selectCarePlanOrderItemList" parameterType="CarePlanOrderItem" resultMap="CarePlanOrderItemResult">
+        <include refid="selectCarePlanOrderItemVo"/>
+        <where>
+            <if test="carePlanId != null "> and care_plan_id = #{carePlanId}</if>
+            <if test="medicalOrderItemId != null "> and medical_order_item_id = #{medicalOrderItemId}</if>
+            <if test="executeTime != null  and executeTime != ''"> and execute_time = #{executeTime}</if>
+            <if test="executeCycle != null "> and execute_cycle = #{executeCycle}</if>
+            <if test="executeFrequency != null "> and execute_frequency = #{executeFrequency}</if>
+        </where>
+    </select>
+
+    <select id="selectCarePlanOrderItemById" parameterType="Long" resultMap="CarePlanOrderItemResult">
+        <include refid="selectCarePlanOrderItemVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectByCarePlanId" resultType="com.zzyl.hospital.vo.CarePlanOrderItemVo">
+        select id,
+               care_plan_id,
+               medical_order_item_id,
+               execute_time,
+               execute_cycle,
+               execute_frequency,
+               create_time,
+               create_by
+        from care_plan_order_item
+        where care_plan_id = #{carePlanId}
+    </select>
+
+    <insert id="insertCarePlanOrderItem" parameterType="CarePlanOrderItem" useGeneratedKeys="true" keyProperty="id">
+        insert into care_plan_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carePlanId != null">care_plan_id,</if>
+            <if test="medicalOrderItemId != null">medical_order_item_id,</if>
+            <if test="executeTime != null and executeTime != ''">execute_time,</if>
+            <if test="executeCycle != null">execute_cycle,</if>
+            <if test="executeFrequency != null">execute_frequency,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carePlanId != null">#{carePlanId},</if>
+            <if test="medicalOrderItemId != null">#{medicalOrderItemId},</if>
+            <if test="executeTime != null and executeTime != ''">#{executeTime},</if>
+            <if test="executeCycle != null">#{executeCycle},</if>
+            <if test="executeFrequency != null">#{executeFrequency},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <insert id="batchInsert">
+        insert into care_plan_order_item (care_plan_id, medical_order_item_id, execute_time, execute_cycle, execute_frequency, create_time, remark)
+        values
+        <foreach item="item" collection="list" separator=",">
+            (#{carePlanId}, #{item.medicalOrderItemId}, #{item.executeTime}, #{item.executeCycle}, #{item.executeFrequency}, sysdate(), #{item.remark})
+        </foreach>
+    </insert>
+
+    <update id="updateCarePlanOrderItem" parameterType="CarePlanOrderItem">
+        update care_plan_order_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carePlanId != null">care_plan_id = #{carePlanId},</if>
+            <if test="medicalOrderItemId != null">medical_order_item_id = #{medicalOrderItemId},</if>
+            <if test="executeTime != null and executeTime != ''">execute_time = #{executeTime},</if>
+            <if test="executeCycle != null">execute_cycle = #{executeCycle},</if>
+            <if test="executeFrequency != null">execute_frequency = #{executeFrequency},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCarePlanOrderItemById" parameterType="Long">
+        delete from care_plan_order_item where id = #{id}
+    </delete>
+
+    <delete id="deleteCarePlanOrderItemByIds" parameterType="String">
+        delete from care_plan_order_item where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

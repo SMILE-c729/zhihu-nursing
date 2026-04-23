@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.CareTaskMapper">
+    <resultMap type="CareTask" id="CareTaskResult">
+        <result property="id" column="id" />
+        <result property="nurseId" column="nurse_id" />
+        <result property="medicalOrderItemId" column="medical_order_item_id" />
+        <result property="medicalOrderItemName" column="medical_order_item_name" />
+        <result property="patientId" column="patient_id" />
+        <result property="patientName" column="patient_name" />
+        <result property="wardBedNo" column="ward_bed_no" />
+        <result property="estimatedServerTime" column="estimated_server_time" />
+        <result property="realServerTime" column="real_server_time" />
+        <result property="mark" column="mark" />
+        <result property="cancelReason" column="cancel_reason" />
+        <result property="status" column="status" />
+        <result property="taskImage" column="task_image" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="createBy" column="create_by" />
+        <result property="updateBy" column="update_by" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+    <sql id="selectCareTaskVo">
+        select id, nurse_id, medical_order_item_id, medical_order_item_name, patient_id, patient_name, ward_bed_no,
+               estimated_server_time, real_server_time, mark, cancel_reason, status, task_image,
+               create_time, update_time, create_by, update_by, remark
+        from care_task
+    </sql>
+
+    <select id="selectCareTaskList" parameterType="CareTask" resultMap="CareTaskResult">
+        <include refid="selectCareTaskVo"/>
+        <where>
+            <if test="nurseId != null and nurseId != ''"> and nurse_id = #{nurseId}</if>
+            <if test="medicalOrderItemId != null"> and medical_order_item_id = #{medicalOrderItemId}</if>
+            <if test="medicalOrderItemName != null and medicalOrderItemName != ''"> and medical_order_item_name like concat('%', #{medicalOrderItemName}, '%')</if>
+            <if test="patientId != null"> and patient_id = #{patientId}</if>
+            <if test="patientName != null and patientName != ''"> and patient_name like concat('%', #{patientName}, '%')</if>
+            <if test="wardBedNo != null and wardBedNo != ''"> and ward_bed_no like concat('%', #{wardBedNo}, '%')</if>
+            <if test="status != null"> and status = #{status}</if>
+        </where>
+        order by estimated_server_time desc, id desc
+    </select>
+</mapper>

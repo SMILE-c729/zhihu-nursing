@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import com.zzyl.common.annotation.Log;
 import com.zzyl.common.constant.CacheConstants;
 import com.zzyl.common.core.controller.BaseController;
@@ -28,6 +31,7 @@ import com.zzyl.system.service.ISysUserOnlineService;
  * 
  * @author ruoyi
  */
+@Api(tags = "在线用户")
 @RestController
 @RequestMapping("/monitor/online")
 public class SysUserOnlineController extends BaseController
@@ -38,6 +42,7 @@ public class SysUserOnlineController extends BaseController
     @Autowired
     private RedisCache redisCache;
 
+    @ApiOperation("获取在线用户列表")
     @PreAuthorize("@ss.hasPermi('monitor:online:list')")
     @GetMapping("/list")
     public TableDataInfo list(String ipaddr, String userName)
@@ -72,10 +77,11 @@ public class SysUserOnlineController extends BaseController
     /**
      * 强退用户
      */
+    @ApiOperation("强退用户")
     @PreAuthorize("@ss.hasPermi('monitor:online:forceLogout')")
     @Log(title = "在线用户", businessType = BusinessType.FORCE)
     @DeleteMapping("/{tokenId}")
-    public AjaxResult forceLogout(@PathVariable String tokenId)
+    public AjaxResult forceLogout(@ApiParam("会话Token") @PathVariable String tokenId)
     {
         redisCache.deleteObject(CacheConstants.LOGIN_TOKEN_KEY + tokenId);
         return success();

@@ -48,6 +48,11 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!-- 核心模块-->
         <dependency>
             <groupId>com.zzyl</groupId>
@@ -69,13 +74,18 @@
         <!-- 护理平台 -->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-nursing-platform</artifactId>
+            <artifactId>zzyl-hospital-platform</artifactId>
         </dependency>
 
         <!--阿里云OSS-->
         <dependency>
             <groupId>com.zzyl</groupId>
             <artifactId>zzyl-oss</artifactId>
+        </dependency>
+        <!-- AI模型 -->
+        <dependency>
+            <groupId>com.zzyl</groupId>
+            <artifactId>zzyl-ai</artifactId>
         </dependency>
 
     </dependencies>

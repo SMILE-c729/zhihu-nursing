@@ -1,0 +1,19 @@
+$headers = @{
+  Authorization = "Bearer app-oIalDiU57Oa8QS89psFCIfBG"
+}
+
+$body = @{
+  inputs = @{
+    query = "你好"
+    authorization  = "s"
+  }
+  response_mode = "blocking"
+  user = "test-user"
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod `
+  -Uri "http://localhost:5001/v1/workflows/run" `
+  -Method Post `
+  -Headers $headers `
+  -ContentType "application/json; charset=utf-8" `
+  -Body $body

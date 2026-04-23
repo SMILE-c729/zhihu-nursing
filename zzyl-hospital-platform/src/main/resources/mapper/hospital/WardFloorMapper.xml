@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzyl.hospital.mapper.WardFloorMapper">
+    
+    <resultMap type="WardFloor" id="WardFloorResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="code"    column="code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWardFloorVo">
+        select id, name, code, create_time, update_time, create_by, update_by, remark from ward_floor
+    </sql>
+
+    <select id="selectWardFloorList" parameterType="WardFloor" resultMap="WardFloorResult">
+        <include refid="selectWardFloorVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="code != null "> and code = #{code}</if>
+        </where>
+    </select>
+    
+    <select id="selectWardFloorById" parameterType="Long" resultMap="WardFloorResult">
+        <include refid="selectWardFloorVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWardFloor" parameterType="WardFloor" useGeneratedKeys="true" keyProperty="id">
+        insert into ward_floor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="code != null">code,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="code != null">#{code},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWardFloor" parameterType="WardFloor">
+        update ward_floor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWardFloorById" parameterType="Long">
+        delete from ward_floor where id = #{id}
+    </delete>
+
+    <delete id="deleteWardFloorByIds" parameterType="String">
+        delete from ward_floor where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAllByNur" resultType="com.zzyl.hospital.domain.WardFloor">
+        select f.*
+        from ward_floor f
+                 left join ward_room r on r.ward_floor_id = f.id
+                 left join ward_bed b on b.ward_room_id = r.id
+                 left join patient e on e.ward_bed_id = b.id
+        where b.ward_bed_status = 1
+        group by f.id
+        order by code, create_time desc
+    </select>
+
+    <select id="selectAllByMonitoringDevice" resultType="com.zzyl.hospital.vo.WardFloorVo">
+        select f.id, f.name, f.code
+        from ward_floor f
+                 left join ward_room r on r.ward_floor_id = f.id
+                 left join ward_bed b on b.ward_room_id = r.id
+                 left join monitoring_device d
+                           on d.binding_location = b.id and d.location_type = 1 and d.physical_location_type = 2
+                 left join monitoring_device rd
+                           on rd.binding_location = r.id and rd.location_type = 1 and rd.physical_location_type = 1
+        where d.id is not null
+           or rd.id is not null
+        group by f.id
+    </select>
+
+
+    <resultMap type="com.zzyl.hospital.vo.WardStructureTreeVo" id="WardStructureResult">
+        <result property="value" column="wardFloorId"/>
+        <result property="label" column="wardFloorName"/>
+        <collection property="children" ofType="com.zzyl.hospital.vo.WardStructureTreeVo">
+            <result property="value" column="wardRoomId"/>
+            <result property="label" column="wardRoomCode"/>
+            <collection property="children" ofType="com.zzyl.hospital.vo.WardStructureTreeVo">
+                <result property="value" column="wardBedId"/>
+                <result property="label" column="wardBedNo"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="selectWardRoomAndWardBedByWardBedStatus" resultMap="WardStructureResult" parameterType="Integer">
+        select f.id         as wardFloorId,
+               f.name       as wardFloorName,
+               r.id         as wardRoomId,
+               r.code       as wardRoomCode,
+               b.id         as wardBedId,
+               b.ward_bed_no as wardBedNo
+        from ward_floor f
+                 left join ward_room r on r.ward_floor_id = f.id
+                 left join ward_bed b on b.ward_room_id = r.id
+        where b.ward_bed_status = #{status}
+        order by f.code, f.create_time desc, r.sort, r.create_time desc, b.sort, b.create_time desc
+    </select>
+</mapper>

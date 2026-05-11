@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>zzyl</artifactId>
+        <artifactId>zhihu-nursing</artifactId>
         <groupId>com.zzyl</groupId>
         <version>3.8.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <artifactId>zzyl-admin</artifactId>
+    <artifactId>zh-admin</artifactId>
 
     <description>
         web服务入口
@@ -56,36 +56,36 @@
         <!-- 核心模块-->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-framework</artifactId>
+            <artifactId>zh-framework</artifactId>
         </dependency>
 
         <!-- 定时任务-->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-quartz</artifactId>
+            <artifactId>zh-quartz</artifactId>
         </dependency>
 
         <!-- 代码生成-->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-generator</artifactId>
+            <artifactId>zh-generator</artifactId>
         </dependency>
 
         <!-- 护理平台 -->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-hospital-platform</artifactId>
+            <artifactId>zh-hospital-platform</artifactId>
         </dependency>
 
         <!--阿里云OSS-->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-oss</artifactId>
+            <artifactId>zh-oss</artifactId>
         </dependency>
         <!-- AI模型 -->
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-ai</artifactId>
+            <artifactId>zh-ai</artifactId>
         </dependency>
 
     </dependencies>

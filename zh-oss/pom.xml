@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.zzyl</groupId>
-        <artifactId>zzyl</artifactId>
+        <artifactId>zhihu-nursing</artifactId>
         <version>3.8.9</version>
     </parent>
 
-    <artifactId>zzyl-oss</artifactId>
+    <artifactId>zh-oss</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>com.zzyl</groupId>
-            <artifactId>zzyl-common</artifactId>
+            <artifactId>zh-common</artifactId>
         </dependency>
     </dependencies>
 

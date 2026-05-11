@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zzyl</groupId>
-    <artifactId>zzyl</artifactId>
+    <artifactId>zhihu-nursing</artifactId>
     <version>3.8.9</version>
 
-    <name>zzyl</name>
-    <url>http://www.ruoyi.vip</url>
+    <name>zhihu-nursing</name>
+    <url>https://github.com/gong-zixing/zhihu-nursing</url>
     <description>智护云医管</description>
 
     <properties>
-        <zzyl.version>3.8.9</zzyl.version>
+        <zh.version>3.8.9</zh.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -194,55 +194,55 @@
             <!-- 定时任务-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-quartz</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-quartz</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!-- 代码生成-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-generator</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-generator</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!-- 核心模块-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-framework</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-framework</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!-- 系统模块-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-system</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-system</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!-- 通用工具-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-common</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-common</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!--护理平台模块-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-hospital-platform</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-hospital-platform</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!--OSS模块-->
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-oss</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-oss</artifactId>
+                <version>${zh.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zzyl</groupId>
-                <artifactId>zzyl-ai</artifactId>
-                <version>${zzyl.version}</version>
+                <artifactId>zh-ai</artifactId>
+                <version>${zh.version}</version>
             </dependency>
 
             <!--Lombok-->
@@ -359,15 +359,15 @@
     </dependencyManagement>
 
     <modules>
-        <module>zzyl-admin</module>
-        <module>zzyl-framework</module>
-        <module>zzyl-system</module>
-        <module>zzyl-quartz</module>
-        <module>zzyl-generator</module>
-        <module>zzyl-common</module>
-        <module>zzyl-hospital-platform</module>
-        <module>zzyl-oss</module>
-        <module>zzyl-ai</module>
+        <module>zh-admin</module>
+        <module>zh-framework</module>
+        <module>zh-system</module>
+        <module>zh-quartz</module>
+        <module>zh-generator</module>
+        <module>zh-common</module>
+        <module>zh-hospital-platform</module>
+        <module>zh-oss</module>
+        <module>zh-ai</module>
     </modules>
     <packaging>pom</packaging>
 

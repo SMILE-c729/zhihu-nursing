@@ -45,3 +45,11 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+######################################################################
+# Sensitive Configuration (NEVER commit)
+**/application-druid.yml
+**/application-local.yml
+**/application-prod.yml
+*.env
+.env.*

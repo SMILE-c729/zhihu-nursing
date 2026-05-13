@@ -48,6 +48,7 @@ nbdist/
 
 ######################################################################
 # Sensitive Configuration (NEVER commit)
+**/application.yml
 **/application-druid.yml
 **/application-local.yml
 **/application-prod.yml

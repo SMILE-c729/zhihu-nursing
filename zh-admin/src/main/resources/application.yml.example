@@ -72,21 +72,16 @@ spring:
       max-file-size: 10MB
       # 设置总上传的文件大小
       max-request-size: 20MB
-  # 服务模块
-#  devtools:
-#    restart:
-#      # 热部署开关
-#      enabled: false
   # redis 配置
   redis:
     # 地址
-    host: 192.168.100.128
+    host: your-redis-host
     # 端口，默认为6379
-    port: 6380
+    port: 6379
     # 数据库索引
     database: 0
     # 密码
-    password: 123
+    password: your-redis-password
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -105,7 +100,7 @@ token:
   # 令牌自定义标识
   header: Authorization
   # 令牌密钥
-  secret: abcdefghijklmnopqrstuvwxyz
+  secret: your-token-secret
   # 令牌有效期（默认30分钟）
   expireTime: 30
 
@@ -147,12 +142,12 @@ xss:
 # 阿里云OSS相关配置
 aliyun:
   oss:
-    endpoint: https://oss-cn-beijing.aliyuncs.com
-    bucketName: zzyl-gzx
+    endpoint: your-aliyun-oss-endpoint
+    bucketName: your-aliyun-oss-bucket
 
 baidu:
   ai:
-    apiKey: bce-v3/ALTAK-3Nt2UUmbdknbDqV5MeQhw/60a6e03d08641e70c0536265e6a032637eab0308
+    apiKey: your-baidu-api-key
     model: ernie-x1-turbo-32k
     baseUrl: https://qianfan.baidubce.com/v2/
 dept:
@@ -160,8 +155,8 @@ dept:
 
 #小程序配置
 wx:
-  appid: wx56fe30c6faa81727
-  secret: 6adda6c90aa612931b17d452350b5823
+  appid: your-wx-appid
+  secret: your-wx-secret
 
 zzyl:
   ai:
@@ -169,7 +164,7 @@ zzyl:
       # 替换为你自己的 Dify base-url，通常以 /v1 结尾
       base-url: http://localhost:5001/v1/workflows/run
       # 替换为你自己的 Dify 应用 API Key
-      api-key: app-oIalDiU57Oa8QS89psFCIfBG
+      api-key: your-dify-api-key
       connect-timeout: 5000
       read-timeout: 180000
       write-timeout: 30000
@@ -181,22 +176,21 @@ zzyl:
       max-session-message-size: 80
     tool:
       # Dify 调用当前项目工具接口时使用的访问密钥
-      api-key: demo-dify-tool-key
+      api-key: your-dify-tool-key
 
 # 华为IOT配置
 huawei:
   iot:
     huaweicloud:
-      ak: HPUARB31S4I0UWLPORVP
-      sk: HcY165Pk2vmoacz4TptT6LcTbVXMcNvwng7aUFsl
+      ak: your-huawei-ak
+      sk: your-huawei-sk
       #如果是上海一，请填写"cn-east-3"；如果是北京四，请填写"cn-north-4";
       regionId: cn-east-3
-      endpoint: 1cb3ab9c12.st1.iotda-app.cn-east-3.myhuaweicloud.com
-      projectId: 9814ce9107354d25b5ca01465f9b6033
+      endpoint: your-huawei-endpoint
+      projectId: your-huawei-project-id
       #amqp相关配置 下一章课程接收设备数据使用
-      host: 1cb3ab9c12.st1.iotda-app.cn-east-3.myhuaweicloud.com
+      host: your-huawei-amqp-host
       port: 5671
-      accessKey: 4pp2tBcX
-      accessCode: SVFpZydXwbGPxbnQ1TDyYsbGckx0pvH6
+      accessKey: your-huawei-access-key
+      accessCode: your-huawei-access-code
       queueName: DefaultQueue   #默认无需改动
-
